@@ -1,0 +1,13 @@
+name = "KernelSpectralDensities"
+uuid = "027d52a2-76e5-4228-9bfe-bc7e0f5a8348"
+authors = ["Steffen Ridderbusch <steffen@robots.ox.ac.uk\n> and contributors"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1.6"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
