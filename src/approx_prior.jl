@@ -23,7 +23,8 @@ julia> rff = ShiftedRFF(S, 2);
 
 julia> ap = ApproximateGPSample(rff);
 
-julia> ap(1.) 
+julia> ap(1.)
+```
 """
 struct ApproximateGPSample{RFF<:AbstractRFF}
     w::Vector{Float64}

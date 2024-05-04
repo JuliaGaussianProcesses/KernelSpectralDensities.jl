@@ -69,7 +69,7 @@ julia> S = SpectralDensity(k);
 julia> rff = DoubleRFF(S, 2);
 
 julia> rff(1.);
-
+```
 """
 struct DoubleRFF <: AbstractRFF
     # need to also deal with vector weights
