@@ -10,6 +10,9 @@ import Base: rand
 using Random
 
 export SpectralDensity
+export ShiftedRFF, DoubleRFF
+export ApproximateGPSample
+
 
 # write tests to verify spectral density via fourier transforms
 # also add SpectralKernel (which can then be learned?)

@@ -4,11 +4,11 @@ An approximate sample from the GP prior defined by the kernel that corresponds t
 
 # Definition
 
-Using the random Fourier feature function `rff`, we can define the Bayesian linear model 
+Using the random Fourier feature function `f(x)`, we can define the Bayesian linear model 
 ```math
-    f(x) = w' * rff(x)
+    f(x) = w' * f(x)
 ```
-where `w_i ~ N(0, 1), i = 1,...,l` and `rff(x)` is the random Fourier feature function evaluated at `x` with `l` feature dimensions. 
+where `w_i ~ N(0, 1), i = 1,...,l` and `f(x)` is the random Fourier feature function evaluated at `x` with `l` feature dimensions. 
 Each draw of `w` results in a different function sample from the GP prior.
 
 
@@ -23,7 +23,7 @@ julia> rff = ShiftedRFF(S, 2);
 
 julia> ap = ApproximateGPSample(rff);
 
-julia> ap(1.)
+julia> ap(1.);
 ```
 """
 struct ApproximateGPSample{RFF<:AbstractRFF}

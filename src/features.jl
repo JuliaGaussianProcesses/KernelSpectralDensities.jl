@@ -1,5 +1,3 @@
-export ShiftedRFF, DoubleRFF
-
 """
     AbstractRFF
 Abstract type defining a random Fourier feature function. 
@@ -75,7 +73,7 @@ struct DoubleRFF <: AbstractRFF
     # need to also deal with vector weights
     wv::Vector{Float64}
 
-    function DualRFF(S::SpectralDensity, l::Int)
+    function DoubleRFF(S::SpectralDensity, l::Int)
         wv = [rand(S, 1) for _ in 1:l]
         new(wv)
     end
