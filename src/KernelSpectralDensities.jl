@@ -16,5 +16,7 @@ export SpectralDensity
 
 include("base.jl")
 include("expkernels.jl")
+include("features.jl")
+include("approx_prior.jl")
 
 end

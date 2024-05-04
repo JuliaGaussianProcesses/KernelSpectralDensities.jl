@@ -5,20 +5,23 @@ abstract type AbstractSpectralDensity end
 
 """
     rand(S::AbstractSpectralDensity, d::Int)
+
 Generate a random d-dimensional sample from the spectral density `S`. 
 Because many KernelFunctions.Kernel are input dimension agnostic, you must explicitly specify the input dimension `d`.
 
 # Examples
+
 ```jldoctest
 julia> k = SqExponentialKernel();
 
 julia> S = SpectralDensity(k);
 
 julia> rand(S, 1)
+```
 """
 rand(S::AbstractSpectralDensity, d::Int) = rand(Random.default_rng(), S, d)
 
-rand(S::AbstractSpectralDensity) = throw(ArgumentError("KernelFunctions.kernel are input dimension agnostic. You must explicitly specify it."))
+rand(::AbstractSpectralDensity) = throw(ArgumentError("KernelFunctions.kernel are input dimension agnostic. You must explicitly specify it."))
 
 """
     SpectralDensity{K<:Kernel}
@@ -35,8 +38,8 @@ julia> k = SqExponentialKernel();
 julia> S = SpectralDensity(k);
 
 julia> S(0.0)
-
-julia> rand(S, 1)
+2.5066282746310002
+```
 """
 struct SpectralDensity{K<:KernelFunctions.Kernel} <: AbstractSpectralDensity
     kernel::K
