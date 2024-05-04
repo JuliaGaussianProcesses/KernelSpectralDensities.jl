@@ -5,24 +5,23 @@ DocMeta.setdocmeta!(KernelSpectralDensities, :DocTestSetup, :(using KernelSpectr
 
 makedocs(;
     modules=[KernelSpectralDensities],
-    authors="Steffen Ridderbusch <steffen@robots.ox.ac.uk
-> and contributors",
-    repo="https://github.com/Crown421/KernelSpectralDensities.jl/blob/{commit}{path}#{line}",
+    authors="Steffen Ridderbusch <steffen@robots.ox.ac.uk> and contributors",
+    repo="https://github.com/JuliaGaussianProcesses/KernelSpectralDensities.jl/blob/{commit}{path}#{line}",
     sitename="KernelSpectralDensities.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://Crown421.github.io/KernelSpectralDensities.jl",
+        canonical="https://juliagaussianprocesses.github.io/KernelSpectralDensities.jl",
         edit_link="main",
         assets=String[],
     ),
     pages=[
         "Home" => "index.md",
-        "Densities" => "densities.md",
+        "Spectral Densities" => "densities.md",
         "Feature Functions" => "feature_functions.md",
     ],
 )
 
 deploydocs(;
-    repo="github.com/Crown421/KernelSpectralDensities.jl",
+    repo="github.com/JuliaGaussianProcesses/KernelSpectralDensities.jl",
     devbranch="main",
 )

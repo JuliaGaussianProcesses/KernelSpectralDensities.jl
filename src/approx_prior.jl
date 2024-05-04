@@ -6,7 +6,7 @@ An approximate sample from the GP prior defined by the kernel that corresponds t
 
 Using the random Fourier feature function `f(x)`, we can define the Bayesian linear model 
 ```math
-    f(x) = w' * f(x)
+    f(x) = w' f(x)
 ```
 where `w_i ~ N(0, 1), i = 1,...,l` and `f(x)` is the random Fourier feature function evaluated at `x` with `l` feature dimensions. 
 Each draw of `w` results in a different function sample from the GP prior.
