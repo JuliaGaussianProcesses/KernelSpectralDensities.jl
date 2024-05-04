@@ -16,7 +16,7 @@ julia> k = SqExponentialKernel();
 
 julia> S = SpectralDensity(k);
 
-julia> rand(S, 1)
+julia> rand(S, 1);
 ```
 """
 rand(S::AbstractSpectralDensity, d::Int) = rand(Random.default_rng(), S, d)

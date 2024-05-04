@@ -2,7 +2,7 @@ export ShiftedRFF, DoubleRFF
 
 """
     AbstractRFF
-Abstract type defining a random Fourier feature functions. 
+Abstract type defining a random Fourier feature function. 
 """
 abstract type AbstractRFF end
 
@@ -14,7 +14,7 @@ Random Fourier feature function with a random shift, projecting an input x into 
     
 This feature function is defined as 
 ```math
-    sqrt(2 / l) * cos(2 * pi * ((w * x) + b))
+    \\sqrt{2 / l}  \\cos(2  π  ((w^T  x) + b))
 ```
 where `w` sampled from the spectral density S, `b` is uniformly sampled from `[0, 2π]` and `l` is the number of sampled frequencies.
 
@@ -27,7 +27,7 @@ julia> S = SpectralDensity(k);
 
 julia> rff = ShiftedRFF(S, 2);
 
-julia> rff(1.)
+julia> rff(1.);
 ```
 """
 struct ShiftedRFF <: AbstractRFF
@@ -36,7 +36,7 @@ struct ShiftedRFF <: AbstractRFF
 
     function ShiftedRFF(S::SpectralDensity, l::Int)
         wv = [rand(S, 1) for _ in 1:l]
-        b = rand(n)
+        b = rand(l)
         new(wv, b)
     end
 end
@@ -54,7 +54,7 @@ Random Fourier feature function with cos and sin terms, projecting an input x in
 
 This feature function is defined as
 ```math
-    sqrt(1 / l) * [cos(2 * pi * w' * x),  sin(2 * pi * w' * x)]
+    \\sqrt{1 / l} [\\cos(2 π w' x),  \\sin(2 π w' x)]
 ```
 where `w` sampled from the spectral density S and `l` is the number of sampled frequencies. 
 The output will be the result of `[cos(...w_1), cos(...w_2), ..., cos(...w_l), sin(...w_1), sin(...w_2), ..., sin(...w_l)]`.
@@ -68,7 +68,7 @@ julia> S = SpectralDensity(k);
 
 julia> rff = DoubleRFF(S, 2);
 
-julia> rff(1.)
+julia> rff(1.);
 
 """
 struct DoubleRFF <: AbstractRFF

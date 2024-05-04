@@ -17,6 +17,8 @@ makedocs(;
     ),
     pages=[
         "Home" => "index.md",
+        "Densities" => "densities.md",
+        "Feature Functions" => "feature_functions.md",
     ],
 )
 
