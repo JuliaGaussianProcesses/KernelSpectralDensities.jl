@@ -29,24 +29,28 @@ julia> rff(1.);
 ```
 """
 struct ShiftedRFF <: AbstractRFF
-    wv::Vector{Float64}
+    wv::Union{Vector{<:Real},Matrix{<:Real}}
     b::Vector{Float64}
 
     function ShiftedRFF(S::SpectralDensity, l::Int)
-        wv = [rand(S, 1) for _ in 1:l]
+        # wv = [rand(S, 1) for _ in 1:l]
+        w = rand(S, l)
         b = rand(l)
-        new(wv, b)
+        new(w, b)
     end
 end
 
+_mul(w::Vector, x) = w .* x
+_mul(w::Matrix, x) = dot.(eachcol(w), [x])
+
 function (rff::ShiftedRFF)(x)
-    l = length(rff.wv)
-    sqrt(2 / l) * cos.(2 * pi * ((rff.wv .* x) .+ rff.b))
+    l = maximum(size(rff.wv))
+    sqrt(2 / l) * cos.(2 * pi * (_mul(rff.wv, x) .+ rff.b))
 end
 
 """
     DoubleRFF(S::SpectralDensity, l::Int)
-Random Fourier feature function with cos and sin terms, projecting an input x into 2*l dimensionional feature space.
+Random Fourier feature function with cos and sin terms, projecting an input x into l dimensionional feature space.
 
 # Definition
 
@@ -54,8 +58,8 @@ This feature function is defined as
 ```math
     \\sqrt{1 / l} [\\cos(2 π w' x),  \\sin(2 π w' x)]
 ```
-where `w` sampled from the spectral density S and `l` is the number of sampled frequencies. 
-The output will be the result of `[cos(...w_1), cos(...w_2), ..., cos(...w_l), sin(...w_1), sin(...w_2), ..., sin(...w_l)]`.
+where `w` sampled from the spectral density S, with a total of `l/2` sampled frequencies.
+The output will be the result of `[cos(...w_1), cos(...w_2), ..., cos(...w_l/2), sin(...w_1), sin(...w_2), ..., sin(...w_l/2)]`.
 
 # Examples
 
@@ -70,19 +74,20 @@ julia> rff(1.);
 ```
 """
 struct DoubleRFF <: AbstractRFF
-    # need to also deal with vector weights
-    wv::Vector{Float64}
+    wv::Union{Vector{<:Real},Matrix{<:Real}}
 
     function DoubleRFF(S::SpectralDensity, l::Int)
-        wv = [rand(S, 1) for _ in 1:l]
+        if l % 2 != 0
+            throw(ArgumentError("l must be even"))
+        end
+        wv = rand(S, div(l, 2))
         new(wv)
     end
 end
 
 function (rff::DoubleRFF)(x)
-    l = length(rff.wv)
-    # sqrt(1 / l) * (cos.(2 * pi * ((rff.wv .* x))) + sin.(2 * pi * ((rff.wv .* x))))
-    c = cos.(2 * pi * ((rff.wv .* x)))
-    s = sin.(2 * pi * ((rff.wv .* x)))
+    l = maximum(size(rff.wv))
+    c = cos.(2 * pi * (_mul(rff.wv, x)))
+    s = sin.(2 * pi * (_mul(rff.wv, x)))
     sqrt(1 / l) * vcat(c, s)
 end

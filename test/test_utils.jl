@@ -1,5 +1,5 @@
 function test_spectral_density(ker::Kernel, w_interval, t_interval, plot::Bool=false)
-    S = SpectralDensity(ker)
+    S = SpectralDensity(ker, 1)
     k(t) = ker(0, t)
 
     # tbd on 2D
@@ -13,14 +13,14 @@ function test_spectral_density(ker::Kernel, w_interval, t_interval, plot::Bool=f
 
     @test norm(k.(τv) .- ks.(τv)) < 1e-5
 
-    w_samples = [rand(S, 1) for _ in 1:1e6]
+    w_samples = rand(S, Int(1e6))
     h = fit(Histogram, w_samples, nbins=100)
     h = normalize(h; mode=:pdf)
 
     midpoints = (h.edges[1][1:end-1] .+ h.edges[1][2:end]) ./ 2
     @test norm(S.(midpoints) .- h.weights) < 0.1
 
-    w_samples = [rand(S, 1) for _ in 1:1e5]
+    w_samples = rand(S, Int(1e5))
 
     kss(t) = 1 / length(w_samples) * sum(cos.(2 * π * w_samples * t))
 
@@ -42,7 +42,7 @@ function test_spectral_density(ker::Kernel, w_interval, t_interval, plot::Bool=f
 end
 
 function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; plot::Bool=false)
-    S = SpectralDensity(ker)
+    S = SpectralDensity(ker, 2)
     k(x) = ker([0, 0], x)
 
     x = range(x_interval..., length=41)
@@ -67,10 +67,11 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; plot::Bool
     # w = range(w_interval..., length=80)
     # W = [[w_i, w_j] for w_i in w, w_j in w]
 
-    w_samples = [rand(S, 2) for _ in 1:10e6]
+    w_samples = rand(S, Int(1e7))
     # reshape to fit into histogram fit
-    w_tmp = reduce(hcat, w_samples[:])
-    w_tmp = (w_tmp[1, :], w_tmp[2, :])
+    # w_tmp = reduce(hcat, w_samples[:])
+    # w_tmp = (w_tmp[1, :], w_tmp[2, :])
+    w_tmp = (w_samples[1, :], w_samples[2, :])
 
     h = fit(Histogram, w_tmp, nbins=200)
     h = normalize(h; mode=:pdf)
@@ -81,8 +82,8 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; plot::Bool
     @test norm(S.(midpoints) .- h.weights, Inf) < 0.5
 
     ## check kernel recovery from sammpling
-    w_samples = [rand(S, 2) for _ in 1:5e4]
-    kss(x) = 1 / length(w_samples) * sum(cos.(2 * π * dot.(w_samples, [x])))
+    w_samples = rand(S, Int(5e4))
+    kss(x) = 1 / size(w_samples, 2) * sum(cos.(2 * π * dot.(eachcol(w_samples), [x])))
 
     Kss = [kss(X_i) for X_i in X]
 

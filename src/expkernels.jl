@@ -17,22 +17,22 @@ function _sqexp(w::AbstractVector{<:Real}, l2::Real)
     sqrt(2 * l2 * π)^d * exp(-2 * l2 * π^2 * dot(w, w))
 end
 
-function rand(rng::AbstractRNG, ::SpectralDensity{<:SqExponentialKernel}, d::Int)
-    _sqexprand(rng, d, 1)
+function rand(rng::AbstractRNG, S::SpectralDensity{<:SqExponentialKernel}, n::Int...)
+    _sqexprand(rng, S.dim, 1, n...)
 end
 
-function rand(rng::AbstractRNG, S::SpectralDensity{<:TransformedKernel{<:SqExponentialKernel,<:ScaleTransform}}, d::Int)
+function rand(rng::AbstractRNG, S::SpectralDensity{<:TransformedKernel{<:SqExponentialKernel,<:ScaleTransform}}, n::Int...)
     l = 1 / only(S.kernel.transform.s)
-    _sqexprand(rng, d, l)
+    _sqexprand(rng, S.dim, l, n...)
 end
 
-function _sqexprand(rng::AbstractRNG, d::Int, l::Real)
+function _sqexprand(rng::AbstractRNG, d::Int, l::Real, n::Int...)
     σ = 1 / (2 * l * π)
     if d == 1
-        return rand(rng, Normal(0, σ))
+        return rand(rng, Normal(0, σ), n...)
     elseif d > 1
         σv = ones(d) * abs2(σ)
-        return rand(rng, MvNormal(Diagonal(σv)))
+        return rand(rng, MvNormal(Diagonal(σv)), n...)
     else
         throw(ArgumentError("Number of input features must be greater than 0."))
     end
