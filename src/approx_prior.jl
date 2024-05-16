@@ -17,7 +17,7 @@ Each draw of `w` results in a different function sample from the GP prior.
 ```jldoctest
 julia> k = SqExponentialKernel();
 
-julia> S = SpectralDensity(k);
+julia> S = SpectralDensity(k, 1);
 
 julia> rff = ShiftedRFF(S, 2);
 
@@ -30,9 +30,8 @@ struct ApproximateGPSample{RFF<:AbstractRFF}
     w::Vector{Float64}
     rff::RFF
 
-    function ApproximateGPSample(rff::AbstractRFF)
-        n = length(rff.wv)
-        w = randn(n)
+    function ApproximateGPSample(rng::AbstractRNG, rff::AbstractRFF)
+        w = randn(rng, rff.l)
         new{typeof(rff)}(w, rff)
     end
 end

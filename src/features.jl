@@ -5,7 +5,7 @@ Abstract type defining a random Fourier feature function.
 abstract type AbstractRFF end
 
 """
-    ShiftedRFF(S::SpectralDensity, l::Int)
+    ShiftedRFF([rng::AbstractRNG], S::SpectralDensity, l::Int)
 Random Fourier feature function with a random shift, projecting an input x into l dimensionional feature space. 
     
 # Definition
@@ -21,7 +21,7 @@ where `w` sampled from the spectral density S, `b` is uniformly sampled from `[0
 ```jldoctest
 julia> k = SqExponentialKernel();
 
-julia> S = SpectralDensity(k);
+julia> S = SpectralDensity(k, 1);
 
 julia> rff = ShiftedRFF(S, 2);
 
@@ -31,25 +31,26 @@ julia> rff(1.);
 struct ShiftedRFF <: AbstractRFF
     wv::Union{Vector{<:Real},Matrix{<:Real}}
     b::Vector{Float64}
+    l::Int
 
-    function ShiftedRFF(S::SpectralDensity, l::Int)
-        # wv = [rand(S, 1) for _ in 1:l]
-        w = rand(S, l)
-        b = rand(l)
-        new(w, b)
+    function ShiftedRFF(rng::AbstractRNG, S::SpectralDensity, l::Int)
+        w = rand(rng, S, l)
+        b = rand(rng, l)
+        new(w, b, l)
     end
 end
+
+ShiftedRFF(S::SpectralDensity, l::Int) = ShiftedRFF(Random.default_rng(), S, l)
 
 _mul(w::Vector, x) = w .* x
 _mul(w::Matrix, x) = dot.(eachcol(w), [x])
 
 function (rff::ShiftedRFF)(x)
-    l = maximum(size(rff.wv))
-    sqrt(2 / l) * cos.(2 * pi * (_mul(rff.wv, x) .+ rff.b))
+    sqrt(2 / rff.l) * cos.(2 * pi * (_mul(rff.wv, x) .+ rff.b))
 end
 
 """
-    DoubleRFF(S::SpectralDensity, l::Int)
+    DoubleRFF([rng::AbstractRNG], S::SpectralDensity, l::Int)
 Random Fourier feature function with cos and sin terms, projecting an input x into l dimensionional feature space.
 
 # Definition
@@ -66,7 +67,7 @@ The output will be the result of `[cos(...w_1), cos(...w_2), ..., cos(...w_l/2),
 ```jldoctest
 julia> k = SqExponentialKernel();
 
-julia> S = SpectralDensity(k);
+julia> S = SpectralDensity(k, 1);
 
 julia> rff = DoubleRFF(S, 2);
 
@@ -75,19 +76,21 @@ julia> rff(1.);
 """
 struct DoubleRFF <: AbstractRFF
     wv::Union{Vector{<:Real},Matrix{<:Real}}
+    l::Int
 
-    function DoubleRFF(S::SpectralDensity, l::Int)
+    function DoubleRFF(rng::AbstractRNG, S::SpectralDensity, l::Int)
         if l % 2 != 0
             throw(ArgumentError("l must be even"))
         end
-        wv = rand(S, div(l, 2))
-        new(wv)
+        wv = rand(rng, S, div(l, 2))
+        new(wv, l)
     end
 end
 
+DoubleRFF(S::SpectralDensity, l::Int) = DoubleRFF(Random.default_rng(), S, l)
+
 function (rff::DoubleRFF)(x)
-    l = maximum(size(rff.wv))
     c = cos.(2 * pi * (_mul(rff.wv, x)))
     s = sin.(2 * pi * (_mul(rff.wv, x)))
-    sqrt(1 / l) * vcat(c, s)
+    sqrt(2 / rff.l) * vcat(c, s)
 end

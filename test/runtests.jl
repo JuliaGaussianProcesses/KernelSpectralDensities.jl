@@ -3,6 +3,7 @@ using Test
 using LinearAlgebra
 using FastGaussQuadrature
 using StatsBase
+using StableRNGs
 
 @info "Packages Loaded"
 
@@ -12,5 +13,5 @@ include("expkernels.jl")
 
 include("features.jl")
 
-include("approx_prior.jl")
+# include("approx_prior.jl")
 
