@@ -22,10 +22,6 @@ julia> rand(S, 1);
 """
 rand(S::AbstractSpectralDensity, n::Int...) = rand(Random.default_rng(), S, n...)
 
-# rand(S::AbstractSpectralDensity) = rand(Random.default_rng(), S)
-
-rand(::AbstractSpectralDensity) = throw(ArgumentError("KernelFunctions.kernel are input dimension agnostic. You must explicitly specify it."))
-
 """
     SpectralDensity{K<:Kernel}(k::Kernel, dim::Int)
 Spectral density for the kernel K for `dim` dimensional frequency space. 
