@@ -7,7 +7,6 @@
 
             f = test_spectral_density(ker, w_interval, t_interval)
         end
-        @info "1D Pure SqExp Done"
 
         @testset "Scaled" begin
             ker = with_lengthscale(SqExponentialKernel(), 0.7)
@@ -16,7 +15,6 @@
 
             f = test_spectral_density(ker, w_interval, t_interval)
         end
-        @info "1D Scaled SqExp Done"
     end
 
     @testset "2D" begin
@@ -26,7 +24,6 @@
 
             f = test_2Dspectral_density(ker, w_interval, x_interval)
         end
-        @info "2D Pure SqExp Done"
 
         @testset "Scaled" begin
             ker = with_lengthscale(SqExponentialKernel(), 0.7)
@@ -35,7 +32,6 @@
 
             f = test_2Dspectral_density(ker, w_interval, x_interval)
         end
-        @info "2D Scaled SqExp Done"
     end
 
 end

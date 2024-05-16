@@ -9,9 +9,15 @@ using StableRNGs
 
 include("test_utils.jl")
 
-include("expkernels.jl")
+@testset "SpectralDensities" begin
+    include("expkernels.jl")
+end
 
-include("features.jl")
+@testset "Feature functions" begin
+    include("features.jl")
+end
 
-# include("approx_prior.jl")
+@testset "Approximate prior" begin
+    include("approx_prior.jl")
+end
 
