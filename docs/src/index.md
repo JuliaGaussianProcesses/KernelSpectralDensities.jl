@@ -4,11 +4,4 @@ CurrentModule = KernelSpectralDensities
 
 # KernelSpectralDensities
 
-Documentation for [KernelSpectralDensities](https://github.com/Crown421/KernelSpectralDensities.jl).
-
-```@index
-```
-
-```@autodocs
-Modules = [KernelSpectralDensities]
-```
+This package is a lightweight extension to [KernelFunctions.jl](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl), providing the spectral densities for a subset of kernels.
