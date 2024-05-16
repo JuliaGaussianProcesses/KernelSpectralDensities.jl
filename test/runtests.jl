@@ -9,6 +9,10 @@ using StableRNGs
 
 include("test_utils.jl")
 
+@testset "Base" begin
+    include("base.jl")
+end
+
 @testset "SpectralDensities" begin
     include("expkernels.jl")
 end
