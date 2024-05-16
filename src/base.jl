@@ -15,7 +15,7 @@ For a spectral density over ``ω \\in R^d, d>1``, computing `n` samples results 
 ```jldoctest
 julia> k = SqExponentialKernel();
 
-julia> S = SpectralDensity(k);
+julia> S = SpectralDensity(k, 1);
 
 julia> rand(S, 1);
 ```
