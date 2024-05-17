@@ -4,7 +4,7 @@ function test_spectral_density(ker::Kernel, w_interval, t_interval, plot::Bool=f
     k(t) = ker(0, t)
 
     # tbd on 2D
-    τv = range(t_interval..., length=50)
+    τv = range(t_interval...; length=50)
 
     wv, weights = gausslegendre(400)
     wv = (wv .+ 1) ./ 2 * (w_interval[2] - w_interval[1]) .+ w_interval[1]
@@ -15,10 +15,10 @@ function test_spectral_density(ker::Kernel, w_interval, t_interval, plot::Bool=f
     @test norm(k.(τv) .- ks.(τv)) < 1e-5
 
     w_samples = rand(rng, S, Int(1e6))
-    h = fit(Histogram, w_samples, nbins=100)
+    h = fit(Histogram, w_samples; nbins=100)
     h = normalize(h; mode=:pdf)
 
-    midpoints = (h.edges[1][1:end-1] .+ h.edges[1][2:end]) ./ 2
+    midpoints = (h.edges[1][1:(end - 1)] .+ h.edges[1][2:end]) ./ 2
     @test norm(S.(midpoints) .- h.weights) < 0.1
 
     w_samples = rand(rng, S, Int(1e5))
@@ -30,16 +30,23 @@ function test_spectral_density(ker::Kernel, w_interval, t_interval, plot::Bool=f
     if plot
         f = Figure()
         ax = Axis(f[1, 1])
-        lines!(ax, τv, k.(τv), label="kernel")
-        lines!(ax, τv, ks.(τv), label="spectral approx")
+        lines!(ax, τv, k.(τv); label="kernel")
+        lines!(ax, τv, ks.(τv); label="spectral approx")
         axislegend()
 
         ax2 = Axis(f[1, 2])
-        lines!(ax2, wv, S.(wv), label="spectral density")
-        barplot!(ax2, midpoints, h.weights, strokewidth=0, strokedash=0, alpha=0.5, label="samples")
+        lines!(ax2, wv, S.(wv); label="spectral density")
+        barplot!(
+            ax2,
+            midpoints,
+            h.weights;
+            strokewidth=0,
+            strokedash=0,
+            alpha=0.5,
+            label="samples",
+        )
         f
     end
-
 end
 
 function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; plot::Bool=false)
@@ -47,7 +54,7 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; plot::Bool
     S = SpectralDensity(ker, 2)
     k(x) = ker([0, 0], x)
 
-    x = range(x_interval..., length=41)
+    x = range(x_interval...; length=41)
     X = [[x_i, x_j] for x_i in x, x_j in x]
     # reference
     K = [k(X_i) for X_i in X]
@@ -75,10 +82,10 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; plot::Bool
     # w_tmp = (w_tmp[1, :], w_tmp[2, :])
     w_tmp = (w_samples[1, :], w_samples[2, :])
 
-    h = fit(Histogram, w_tmp, nbins=200)
+    h = fit(Histogram, w_tmp; nbins=200)
     h = normalize(h; mode=:pdf)
-    midpoints1 = (h.edges[1][1:end-1] .+ h.edges[1][2:end]) ./ 2
-    midpoints2 = (h.edges[2][1:end-1] .+ h.edges[2][2:end]) ./ 2
+    midpoints1 = (h.edges[1][1:(end - 1)] .+ h.edges[1][2:end]) ./ 2
+    midpoints2 = (h.edges[2][1:(end - 1)] .+ h.edges[2][2:end]) ./ 2
 
     midpoints = [[m1, m2] for m1 in midpoints1, m2 in midpoints2]
     @test norm(S.(midpoints) .- h.weights, Inf) < 0.5
@@ -93,16 +100,51 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; plot::Bool
     @test norm(K .- Kss) < 0.3
 
     if plot
-        f = Figure(size=(900, 1000))
+        f = Figure(; size=(900, 1000))
         ax = Axis3(f[1, 1])
-        contour3d!(ax, midpoints1, midpoints2, S.(midpoints); levels=11, color=:orangered3, label="spectral density")
-        contour3d!(ax, midpoints1, midpoints2, h.weights; levels=11, color=:midnightblue, linestyle=:dash, label="samples")
+        contour3d!(
+            ax,
+            midpoints1,
+            midpoints2,
+            S.(midpoints);
+            levels=11,
+            color=:orangered3,
+            label="spectral density",
+        )
+        contour3d!(
+            ax,
+            midpoints1,
+            midpoints2,
+            h.weights;
+            levels=11,
+            color=:midnightblue,
+            linestyle=:dash,
+            label="samples",
+        )
         axislegend(ax)
 
         ax2 = Axis3(f[2, 1])
         contour3d!(ax2, x, x, K; levels=11, color=:orangered3, label="kernel")
-        contour3d!(ax2, x, x, Ks; levels=11, color=:midnightblue, linestyle=:dash, label="spectral approx")
-        contour3d!(ax2, x, x, Kss; levels=11, color=:darkgreen, linestyle=:dashdot, label="spectral approx (sample)")
+        contour3d!(
+            ax2,
+            x,
+            x,
+            Ks;
+            levels=11,
+            color=:midnightblue,
+            linestyle=:dash,
+            label="spectral approx",
+        )
+        contour3d!(
+            ax2,
+            x,
+            x,
+            Kss;
+            levels=11,
+            color=:darkgreen,
+            linestyle=:dashdot,
+            label="spectral approx (sample)",
+        )
         axislegend(ax2)
 
         f

@@ -3,7 +3,6 @@ using LinearAlgebra, StatsBase, AbstractGPs
 using Test
 using StableRNGs
 
-
 ker = SqExponentialKernel()
 
 # basic tests

@@ -7,4 +7,6 @@
 [![ColPrac: Contributor's Guide on Collaborative Practices for Community Packages](https://img.shields.io/badge/ColPrac-Contributor's%20Guide-blueviolet)](https://github.com/SciML/ColPrac)
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle) 
 
+## Spectral densities for kernel functions
 
+This package provides the spectral densities for the stationary kernels in [Kernelfunctions.jl](https://github.com/JuliaGaussianProcesses/KernelFunctions.jl). 

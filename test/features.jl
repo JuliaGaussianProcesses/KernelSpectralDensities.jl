@@ -2,7 +2,6 @@ using KernelSpectralDensities
 using LinearAlgebra, StatsBase
 using Test
 
-
 function basic_rff_tests(RFF, ker, d)
     rng = StableRNG(1234)
 
@@ -26,7 +25,7 @@ function test_RFF_kernel_recovery(RFF, ker, d; plot=false)
     x = zeros(d)
 
     n = 10
-    r = range(0, 5, length=n)
+    r = range(0, 5; length=n)
     z = repeat([zeros(n)], d - 1)
     y = collect.(zip(r, z...))
 
@@ -36,10 +35,10 @@ function test_RFF_kernel_recovery(RFF, ker, d; plot=false)
         k1 = kfa.([x], y)
         k2 = ker.([x], y)
 
-        norm(k1 .- k2)
+        return norm(k1 .- k2)
     end
 
-    err = [kernel_approx_error(RFF(rng, S, Int(10^i)), ker, x, y) for i in d+1:d+3]
+    err = [kernel_approx_error(RFF(rng, S, Int(10^i)), ker, x, y) for i in (d + 1):(d + 3)]
 
     @test all(diff(err) .< 0)
     # println(diff(err))
@@ -50,15 +49,14 @@ function test_RFF_kernel_recovery(RFF, ker, d; plot=false)
         f = Figure()
         ax = Axis(f[1, 1])
 
-        lines!(ax, r, ker.([x], y), label="kernel")
+        lines!(ax, r, ker.([x], y); label="kernel")
         for i in 1:3
             rff = RFF(S, Int(10^i))
-            lines!(ax, r, [dot(rff(x), rff(y_i)) for y_i in y], label="rff approx $(10^i)")
+            lines!(ax, r, [dot(rff(x), rff(y_i)) for y_i in y]; label="rff approx $(10^i)")
         end
         axislegend()
         f
     end
-
 end
 
 @testset "ShiftedRFF" begin
@@ -95,6 +93,3 @@ end
         test_RFF_kernel_recovery(RFF, ker, 2)
     end
 end
-
-
-

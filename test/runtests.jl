@@ -24,4 +24,3 @@ end
 @testset "Approximate prior" begin
     include("approx_prior.jl")
 end
-

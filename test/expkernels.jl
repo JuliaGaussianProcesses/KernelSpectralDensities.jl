@@ -33,5 +33,4 @@
             f = test_2Dspectral_density(ker, w_interval, x_interval)
         end
     end
-
 end
