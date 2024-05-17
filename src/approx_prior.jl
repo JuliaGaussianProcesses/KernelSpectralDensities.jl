@@ -32,7 +32,7 @@ struct ApproximateGPSample{RFF<:AbstractRFF}
 
     function ApproximateGPSample(rng::AbstractRNG, rff::AbstractRFF)
         w = randn(rng, rff.l)
-        new{typeof(rff)}(w, rff)
+        return new{typeof(rff)}(w, rff)
     end
 end
 
@@ -40,9 +40,9 @@ ApproximateGPSample(rff::AbstractRFF) = ApproximateGPSample(Random.default_rng()
 
 function ApproximateGPSample(S::SpectralDensity, l::Int)
     rff = ShiftedRFF(S, l)
-    ApproximateGPSample(rff)
+    return ApproximateGPSample(rff)
 end
 
 function (ap::ApproximateGPSample)(x)
-    dot(ap.rff(x), ap.w)
+    return dot(ap.rff(x), ap.w)
 end

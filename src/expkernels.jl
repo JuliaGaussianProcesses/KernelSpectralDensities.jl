@@ -1,29 +1,34 @@
 
-
 ################################################### 
 ## Squared ExponentialKernel
 
 # ToDo: Not sure about distances? Do all work?
 (S::SpectralDensity{<:SqExponentialKernel})(w) = _sqexp(w, 1)
 
-function (S::SpectralDensity{<:TransformedKernel{<:SqExponentialKernel,<:ScaleTransform}})(w)
+function (S::SpectralDensity{<:TransformedKernel{<:SqExponentialKernel,<:ScaleTransform}})(
+    w
+)
     l = 1 / only(S.kernel.transform.s)
-    _sqexp(w, l^2)
+    return _sqexp(w, l^2)
 end
 
 _sqexp(w::Real, l2::Real) = sqrt(2 * l2 * π) * exp(-2 * l2 * π^2 * w^2)
 function _sqexp(w::AbstractVector{<:Real}, l2::Real)
     d = length(w)
-    sqrt(2 * l2 * π)^d * exp(-2 * l2 * π^2 * dot(w, w))
+    return sqrt(2 * l2 * π)^d * exp(-2 * l2 * π^2 * dot(w, w))
 end
 
 function rand(rng::AbstractRNG, S::SpectralDensity{<:SqExponentialKernel}, n::Int...)
-    _sqexprand(rng, S.dim, 1, n...)
+    return _sqexprand(rng, S.dim, 1, n...)
 end
 
-function rand(rng::AbstractRNG, S::SpectralDensity{<:TransformedKernel{<:SqExponentialKernel,<:ScaleTransform}}, n::Int...)
+function rand(
+    rng::AbstractRNG,
+    S::SpectralDensity{<:TransformedKernel{<:SqExponentialKernel,<:ScaleTransform}},
+    n::Int...,
+)
     l = 1 / only(S.kernel.transform.s)
-    _sqexprand(rng, S.dim, l, n...)
+    return _sqexprand(rng, S.dim, l, n...)
 end
 
 function _sqexprand(rng::AbstractRNG, d::Int, l::Real, n::Int...)
@@ -35,5 +40,3 @@ function _sqexprand(rng::AbstractRNG, d::Int, l::Real, n::Int...)
         return rand(rng, MvNormal(Diagonal(σv)), n...)
     end
 end
-
-

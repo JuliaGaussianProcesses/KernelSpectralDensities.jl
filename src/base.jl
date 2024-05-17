@@ -53,7 +53,6 @@ struct SpectralDensity{K<:KernelFunctions.Kernel} <: AbstractSpectralDensity
         if dim < 1
             throw(ArgumentError("Dimension must be greater than 0"))
         end
-        new{typeof(kernel)}(kernel, dim)
+        return new{typeof(kernel)}(kernel, dim)
     end
 end
-

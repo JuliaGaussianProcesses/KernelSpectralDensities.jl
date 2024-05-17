@@ -1,7 +1,9 @@
 using KernelSpectralDensities
 using Documenter
 
-DocMeta.setdocmeta!(KernelSpectralDensities, :DocTestSetup, :(using KernelSpectralDensities); recursive=true)
+DocMeta.setdocmeta!(
+    KernelSpectralDensities, :DocTestSetup, :(using KernelSpectralDensities); recursive=true
+)
 
 makedocs(;
     modules=[KernelSpectralDensities],
@@ -22,6 +24,5 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/JuliaGaussianProcesses/KernelSpectralDensities.jl",
-    devbranch="main",
+    repo="github.com/JuliaGaussianProcesses/KernelSpectralDensities.jl", devbranch="main"
 )

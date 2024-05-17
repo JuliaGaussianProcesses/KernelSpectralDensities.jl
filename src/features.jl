@@ -36,7 +36,7 @@ struct ShiftedRFF <: AbstractRFF
     function ShiftedRFF(rng::AbstractRNG, S::SpectralDensity, l::Int)
         w = rand(rng, S, l)
         b = rand(rng, l)
-        new(w, b, l)
+        return new(w, b, l)
     end
 end
 
@@ -46,7 +46,7 @@ _mul(w::Vector, x) = w .* x
 _mul(w::Matrix, x) = dot.(eachcol(w), [x])
 
 function (rff::ShiftedRFF)(x)
-    sqrt(2 / rff.l) * cos.(2 * pi * (_mul(rff.wv, x) .+ rff.b))
+    return sqrt(2 / rff.l) * cos.(2 * pi * (_mul(rff.wv, x) .+ rff.b))
 end
 
 """
@@ -83,7 +83,7 @@ struct DoubleRFF <: AbstractRFF
             throw(ArgumentError("l must be even"))
         end
         wv = rand(rng, S, div(l, 2))
-        new(wv, l)
+        return new(wv, l)
     end
 end
 
@@ -92,5 +92,5 @@ DoubleRFF(S::SpectralDensity, l::Int) = DoubleRFF(Random.default_rng(), S, l)
 function (rff::DoubleRFF)(x)
     c = cos.(2 * pi * (_mul(rff.wv, x)))
     s = sin.(2 * pi * (_mul(rff.wv, x)))
-    sqrt(2 / rff.l) * vcat(c, s)
+    return sqrt(2 / rff.l) * vcat(c, s)
 end
