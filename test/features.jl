@@ -85,6 +85,11 @@ end
         basic_rff_tests(RFF, ker, 2)
     end
 
+    @testset "check error" begin
+        S = SpectralDensity(ker, 1)
+        @test_throws ArgumentError RFF(S, 1)
+    end
+
     @testset "kernel recovery" begin
         test_RFF_kernel_recovery(RFF, ker, 1)
         test_RFF_kernel_recovery(RFF, ker, 2)

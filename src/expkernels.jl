@@ -33,8 +33,6 @@ function _sqexprand(rng::AbstractRNG, d::Int, l::Real, n::Int...)
     elseif d > 1
         σv = ones(d) * abs2(σ)
         return rand(rng, MvNormal(Diagonal(σv)), n...)
-    else
-        throw(ArgumentError("Number of input features must be greater than 0."))
     end
 end
 

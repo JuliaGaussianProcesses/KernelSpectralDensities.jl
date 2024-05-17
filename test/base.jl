@@ -9,6 +9,12 @@ using Test
     @test_throws ErrorException S(1.0)
 end
 
+@testset "Dimension check" begin
+    ker = ZeroKernel()
+
+    @test_throws ArgumentError SpectralDensity(ker, 0)
+end
+
 @testset "Base rng" begin
     ker = SqExponentialKernel()
 

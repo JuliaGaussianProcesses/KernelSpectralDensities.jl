@@ -48,5 +48,12 @@ julia> S(zeros(2))
 struct SpectralDensity{K<:KernelFunctions.Kernel} <: AbstractSpectralDensity
     kernel::K
     dim::Int
+
+    function SpectralDensity(kernel::KernelFunctions.Kernel, dim::Int)
+        if dim < 1
+            throw(ArgumentError("Dimension must be greater than 0"))
+        end
+        new{typeof(kernel)}(kernel, dim)
+    end
 end
 
