@@ -45,14 +45,45 @@ julia> S(zeros(2))
 6.283185307179585
 ```
 """
-struct SpectralDensity{K<:KernelFunctions.Kernel} <: AbstractSpectralDensity
+struct SpectralDensity{K<:KernelFunctions.Kernel,D<:Distribution} <: AbstractSpectralDensity
     kernel::K
-    dim::Int
+    # dim::Int
+    d::D
 
     function SpectralDensity(kernel::KernelFunctions.Kernel, dim::Int)
         if dim < 1
             throw(ArgumentError("Dimension must be greater than 0"))
         end
-        return new{typeof(kernel)}(kernel, dim)
+
+        sk, l = _deconstruct_kernel(kernel)
+        if dim == 1
+            d = _spectral_distribution(sk, l)
+        else
+            d = _spectral_distribution(sk, l, dim)
+        end
+        return new{typeof(kernel),typeof(d)}(kernel, d)
     end
+end
+
+function _spectral_distribution(ker::KernelFunctions.Kernel, l)
+    return throw(MethodError(_spectral_distribution, (ker,)))
+end
+
+function _spectral_distribution(ker::KernelFunctions.Kernel, l, d::Int=1)
+    return throw(MethodError(_spectral_distribution, (ker, d)))
+end
+
+# ToDo: This could perhaps go into a separate file
+# I could add `dim` here, and directly return l in the "right shape"?
+# This would be either a vector or number (which would be great)
+function _deconstruct_kernel(ker::SimpleKernel)
+    return ker, 1.0
+end
+
+function _deconstruct_kernel(ker::TransformedKernel{<:SimpleKernel,<:ScaleTransform})
+    return ker.kernel, 1 / ker.transform.s
+end
+
+function _deconstruct_kernel(ker::TransformedKernel)
+    return throw(MethodError(_deconstruct_kernel, (ker,)))
 end
