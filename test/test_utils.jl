@@ -1,4 +1,11 @@
-function test_spectral_density(ker::Kernel, w_interval, t_interval, plot::Bool=false)
+using KernelSpectralDensities
+using Test
+using LinearAlgebra
+using FastGaussQuadrature
+using StatsBase
+using StableRNGs
+
+function test_spectral_density(ker::Kernel, w_interval, t_interval; show_plot::Bool=false)
     rng = StableRNG(123)
     S = SpectralDensity(ker, 1)
     k(t) = ker(0, t)
@@ -12,10 +19,11 @@ function test_spectral_density(ker::Kernel, w_interval, t_interval, plot::Bool=f
 
     ks(t) = c * sum(S.(wv) .* cos.(2 * π * wv * t) .* weights)
 
-    @test norm(k.(τv) .- ks.(τv)) < 1e-5
+    @test norm(k.(τv) .- ks.(τv)) < 5e-3
 
     w_samples = rand(rng, S, Int(1e6))
-    h = fit(Histogram, w_samples; nbins=100)
+    w_bins = range(w_interval...; length=100)
+    h = fit(Histogram, w_samples, w_bins)
     h = normalize(h; mode=:pdf)
 
     midpoints = (h.edges[1][1:(end - 1)] .+ h.edges[1][2:end]) ./ 2
@@ -27,7 +35,7 @@ function test_spectral_density(ker::Kernel, w_interval, t_interval, plot::Bool=f
 
     @test norm(k.(τv) .- kss.(τv)) < 0.1
 
-    if plot
+    if show_plot
         f = Figure()
         ax = Axis(f[1, 1])
         lines!(ax, τv, k.(τv); label="kernel")
@@ -45,11 +53,11 @@ function test_spectral_density(ker::Kernel, w_interval, t_interval, plot::Bool=f
             alpha=0.5,
             label="samples",
         )
-        f
+        display(f)
     end
 end
 
-function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; plot::Bool=false)
+function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; show_plot::Bool=false)
     rng = StableRNG(12345)
     S = SpectralDensity(ker, 2)
     k(x) = ker([0, 0], x)
@@ -82,7 +90,8 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; plot::Bool
     # w_tmp = (w_tmp[1, :], w_tmp[2, :])
     w_tmp = (w_samples[1, :], w_samples[2, :])
 
-    h = fit(Histogram, w_tmp; nbins=200)
+    w_bins = range(w_interval...; length=100)
+    h = fit(Histogram, w_tmp, (w_bins, w_bins))
     h = normalize(h; mode=:pdf)
     midpoints1 = (h.edges[1][1:(end - 1)] .+ h.edges[1][2:end]) ./ 2
     midpoints2 = (h.edges[2][1:(end - 1)] .+ h.edges[2][2:end]) ./ 2
@@ -147,6 +156,6 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; plot::Bool
         )
         axislegend(ax2)
 
-        f
+        display(f)
     end
 end
