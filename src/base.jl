@@ -65,23 +65,34 @@ struct SpectralDensity{K<:KernelFunctions.Kernel,D<:Distribution} <: AbstractSpe
     end
 end
 
+function (S::SpectralDensity)(w)
+    return pdf(S.d, w)
+end
+
+function rand(rng::AbstractRNG, S::SpectralDensity, n::Int...)
+    return rand(rng, S.d, n...)
+end
+
 function _spectral_distribution(ker::KernelFunctions.Kernel, l)
     return throw(MethodError(_spectral_distribution, (ker,)))
 end
 
-function _spectral_distribution(ker::KernelFunctions.Kernel, l, d::Int=1)
+function _spectral_distribution(ker::KernelFunctions.Kernel, l, d::Int)
     return throw(MethodError(_spectral_distribution, (ker, d)))
 end
 
 # ToDo: This could perhaps go into a separate file
 # I could add `dim` here, and directly return l in the "right shape"?
 # This would be either a vector or number (which would be great)
-function _deconstruct_kernel(ker::SimpleKernel)
+function _deconstruct_kernel(ker::KernelFunctions.SimpleKernel)
     return ker, 1.0
 end
 
-function _deconstruct_kernel(ker::TransformedKernel{<:SimpleKernel,<:ScaleTransform})
-    return ker.kernel, 1 / ker.transform.s
+function _deconstruct_kernel(
+    ker::TransformedKernel{<:KernelFunctions.SimpleKernel,<:ScaleTransform}
+)
+    l = inv(only(ker.transform.s))
+    return ker.kernel, l
 end
 
 function _deconstruct_kernel(ker::TransformedKernel)
