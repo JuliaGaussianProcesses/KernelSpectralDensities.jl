@@ -4,6 +4,7 @@ using Reexport
 @reexport using KernelFunctions
 using Distributions
 using LinearAlgebra
+using SpecialFunctions
 
 import Base: rand
 using Random
