@@ -55,11 +55,11 @@ struct SpectralDensity{K<:KernelFunctions.Kernel,D<:Distribution} <: AbstractSpe
             throw(ArgumentError("Dimension must be greater than 0"))
         end
 
-        sk, l = _deconstruct_kernel(kernel)
+        sk, l = _deconstruct_kernel(kernel, dim)
         if dim == 1
             d = _spectral_distribution(sk, l)
         else
-            d = _spectral_distribution(sk, l, dim)
+            d = _spectral_distribution(sk, l)
         end
         return new{typeof(kernel),typeof(d)}(kernel, d)
     end
@@ -73,28 +73,30 @@ function rand(rng::AbstractRNG, S::SpectralDensity, n::Int...)
     return rand(rng, S.d, n...)
 end
 
-function _spectral_distribution(ker::KernelFunctions.Kernel, l)
-    return throw(MethodError(_spectral_distribution, (ker,)))
-end
-
-function _spectral_distribution(ker::KernelFunctions.Kernel, l, d::Int)
-    return throw(MethodError(_spectral_distribution, (ker, d)))
-end
-
 # ToDo: This could perhaps go into a separate file
-# I could add `dim` here, and directly return l in the "right shape"?
-# This would be either a vector or number (which would be great)
-function _deconstruct_kernel(ker::KernelFunctions.SimpleKernel)
-    return ker, 1.0
+function _deconstruct_kernel(ker::KernelFunctions.SimpleKernel, dim::Int)
+    if dim == 1
+        l = 1.0
+    else
+        l = ones(dim)
+    end
+    return ker, l
 end
 
 function _deconstruct_kernel(
-    ker::TransformedKernel{<:KernelFunctions.SimpleKernel,<:ScaleTransform}
+    ker::TransformedKernel{<:KernelFunctions.SimpleKernel,<:ScaleTransform}, dim::Int
 )
     l = inv(only(ker.transform.s))
+    if dim > 1
+        l = ones(dim) * l
+    end
     return ker.kernel, l
 end
 
 function _deconstruct_kernel(ker::TransformedKernel)
     return throw(MethodError(_deconstruct_kernel, (ker,)))
+end
+
+function _spectral_distribution(ker::KernelFunctions.Kernel, l)
+    return throw(MethodError(_spectral_distribution, (ker,)))
 end
