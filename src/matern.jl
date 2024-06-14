@@ -37,7 +37,7 @@ Base.length(d::MvTDist) = length(d.μ)
 
 Base.eltype(::Type{<:MvTDist{T}}) where {T} = T
 
-sampler(d::MvTDist) = d
+# sampler(d::MvTDist) = d
 
 Distributions._rand!(::AbstractRNG, d::MvTDist, x::AbstractArray) = d
 
@@ -51,9 +51,9 @@ function Distributions._logpdf(d::MvTDist, x::AbstractArray)
 
     # log1p term not correct yet. Maybe use quadratic form from Kernelfunctions? 
     # also missing mu
-    t2 = -(d.ν + p) / 2 * log1p(sum(x .* (d.Σ \ x)) / d.ν)
+    t2 = -(d.ν + p) / 2 * log1p(dot((x - d.μ), d.Σ, (x - d.μ)) / d.ν)
 
-    return t1 + 1
+    return t1 + t2
 end
 
 mean(d::MvTDist) = d.μ
