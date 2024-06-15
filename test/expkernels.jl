@@ -11,7 +11,7 @@ end
     ker = SqExponentialKernel()
     @testset "1D" begin
         @testset "Pure" begin
-            ker = SqExponentialKernel()
+            # ker = SqExponentialKernel()
             w_interval = 2.0
             t_interval = [0.0, 4.0]
 
@@ -19,7 +19,7 @@ end
         end
 
         @testset "Scaled" begin
-            ker = SqExponentialKernel()
+            # ker = SqExponentialKernel()
             ker = with_lengthscale(ker, 0.7)
             w_interval = 2.0
             t_interval = [0.0, 4.0]
@@ -30,7 +30,7 @@ end
 
     @testset "2D" begin
         @testset "Pure" begin
-            ker = SqExponentialKernel()
+            # ker = SqExponentialKernel()
             w_interval = [-2.0, 2.0]
             x_interval = [-2.0, 2.0]
 
@@ -38,7 +38,7 @@ end
         end
 
         @testset "Scaled" begin
-            ker = SqExponentialKernel()
+            # ker = SqExponentialKernel()
             ker = with_lengthscale(ker, 0.7)
             w_interval = [-2.0, 2.0]
             x_interval = [-2.0, 2.0]

@@ -37,12 +37,12 @@ julia> k = SqExponentialKernel();
 julia> S = SpectralDensity(k, 1);
 
 julia> S(0.0)
-2.5066282746310002
+2.5066282746310007
 
 julia> S = SpectralDensity(k, 2);
 
 julia> S(zeros(2))
-6.283185307179585
+6.2831853071795845
 ```
 """
 struct SpectralDensity{K<:KernelFunctions.Kernel,D<:Distribution} <: AbstractSpectralDensity
