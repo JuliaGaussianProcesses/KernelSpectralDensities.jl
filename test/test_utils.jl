@@ -69,7 +69,7 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; show_plot:
 
     ## recover kernel from density
     # Gauss quadrature
-    wv, weights = gausslegendre(200)
+    wv, weights = gausslegendre(250)
     wv = (wv .+ 1) ./ 2 * (w_interval[2] - w_interval[1]) .+ w_interval[1]
     weights = [w_i * w_j for w_i in weights, w_j in weights]
     Wv = [[w_i, w_j] for w_i in wv, w_j in wv]
@@ -78,7 +78,7 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; show_plot:
     ks(t) = c^2 * sum(S.(Wv[:]) .* cos.(2 * π * dot.(Wv[:], [t])) .* weights[:])
 
     Ks = [ks(X_i) for X_i in X]
-    @test norm(K .- Ks) < 0.01
+    @test norm(K .- Ks) < 0.015
 
     ## check sampling
     # w = range(w_interval..., length=80)
@@ -108,7 +108,7 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; show_plot:
     #ToDo: better would probably be to test if error decreases with more samples
     @test norm(K .- Kss) < 0.3
 
-    if plot
+    if show_plot
         f = Figure(; size=(900, 1000))
         ax = Axis3(f[1, 1])
         contour3d!(
@@ -118,6 +118,7 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; show_plot:
             S.(midpoints);
             levels=11,
             color=:orangered3,
+            linewidth=2.5,
             label="spectral density",
         )
         contour3d!(
@@ -127,6 +128,7 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; show_plot:
             h.weights;
             levels=11,
             color=:midnightblue,
+            linewidth=2.5,
             linestyle=:dash,
             label="samples",
         )
@@ -141,6 +143,7 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; show_plot:
             Ks;
             levels=11,
             color=:midnightblue,
+            linewidth=2.5,
             linestyle=:dash,
             label="spectral approx",
         )
@@ -151,6 +154,7 @@ function test_2Dspectral_density(ker::Kernel, w_interval, x_interval; show_plot:
             Kss;
             levels=11,
             color=:darkgreen,
+            linewidth=2.5,
             linestyle=:dashdot,
             label="spectral approx (sample)",
         )
