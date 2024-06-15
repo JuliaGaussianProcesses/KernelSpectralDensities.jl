@@ -7,21 +7,21 @@ else
     show_plot = false
 end
 
-ker = Matern32Kernel()
-
 @testset "SquaredExponential Kernel" begin
     ker = SqExponentialKernel()
     @testset "1D" begin
         @testset "Pure" begin
-            w_interval = [-2.0, 2.0]
+            ker = SqExponentialKernel()
+            w_interval = 2.0
             t_interval = [0.0, 4.0]
 
             test_spectral_density(ker, w_interval, t_interval; show_plot)
         end
 
         @testset "Scaled" begin
-            ker = with_lengthscale(SqExponentialKernel(), 0.7)
-            w_interval = [-2.0, 2.0]
+            ker = SqExponentialKernel()
+            ker = with_lengthscale(ker, 0.7)
+            w_interval = 2.0
             t_interval = [0.0, 4.0]
 
             f = test_spectral_density(ker, w_interval, t_interval; show_plot)
@@ -30,6 +30,7 @@ ker = Matern32Kernel()
 
     @testset "2D" begin
         @testset "Pure" begin
+            ker = SqExponentialKernel()
             w_interval = [-2.0, 2.0]
             x_interval = [-2.0, 2.0]
 
@@ -37,7 +38,8 @@ ker = Matern32Kernel()
         end
 
         @testset "Scaled" begin
-            ker = with_lengthscale(SqExponentialKernel(), 0.7)
+            ker = SqExponentialKernel()
+            ker = with_lengthscale(ker, 0.7)
             w_interval = [-2.0, 2.0]
             x_interval = [-2.0, 2.0]
 
