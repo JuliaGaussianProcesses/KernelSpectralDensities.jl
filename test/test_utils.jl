@@ -5,7 +5,7 @@ using FastGaussQuadrature
 using StatsBase
 using StableRNGs
 
-function test_spectral_density(ker::Kernel, w_interval, t_interval; show_plot::Bool=false)
+function test_spectral_density(ker::Kernel, w_max, t_interval; show_plot::Bool=false)
     rng = StableRNG(123)
     S = SpectralDensity(ker, 1)
     k(t) = ker(0, t)
@@ -14,15 +14,15 @@ function test_spectral_density(ker::Kernel, w_interval, t_interval; show_plot::B
     τv = range(t_interval...; length=50)
 
     wv, weights = gausslegendre(400)
-    wv = (wv .+ 1) ./ 2 * (w_interval[2] - w_interval[1]) .+ w_interval[1]
-    c = (w_interval[2] - w_interval[1]) / 2
+    wv = (wv .+ 1) ./ 2 * w_max
+    c = w_max / 2
 
-    ks(t) = c * sum(S.(wv) .* cos.(2 * π * wv * t) .* weights)
+    ks(t) = 2 * c * sum(S.(wv) .* cos.(2 * π * wv * t) .* weights)
 
     @test norm(k.(τv) .- ks.(τv)) < 5e-3
 
     w_samples = rand(rng, S, Int(1e6))
-    w_bins = range(w_interval...; length=100)
+    w_bins = range(-w_max, w_max; length=100)
     h = fit(Histogram, w_samples, w_bins)
     h = normalize(h; mode=:pdf)
 
@@ -43,7 +43,8 @@ function test_spectral_density(ker::Kernel, w_interval, t_interval; show_plot::B
         axislegend()
 
         ax2 = Axis(f[1, 2])
-        lines!(ax2, wv, S.(wv); label="spectral density")
+        pwv = vcat(-reverse(wv), wv)
+        lines!(ax2, pwv, S.(pwv); label="spectral density")
         barplot!(
             ax2,
             midpoints,
