@@ -1,8 +1,6 @@
 
 abstract type AbstractSpectralDensity end
 
-(S::AbstractSpectralDensity)(w) = error("Not implemented")
-
 """
     rand(S::AbstractSpectralDensity, [n::Int])
 
