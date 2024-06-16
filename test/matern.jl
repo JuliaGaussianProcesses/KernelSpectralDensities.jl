@@ -1,6 +1,6 @@
 include("test_utils.jl")
 
-if !isdefined(Base, :RUN_TESTS) && !RUN_TESTS
+if (!@isdefined RUN_TESTS) || !RUN_TESTS
     using CairoMakie
     show_plot = true
 else
@@ -20,7 +20,7 @@ end
         @testset "Scaled" begin
             # ker = Matern32Kernel()
             ker = with_lengthscale(ker, 0.7)
-            w_interval = [-2.0, 2.0]
+            w_interval = 2.0
             t_interval = [0.0, 3.5]
 
             test_spectral_density(ker, w_interval, t_interval; show_plot)
@@ -29,7 +29,7 @@ end
 
     @testset "2D" begin
         @testset "Pure" begin
-            # ker = Matern32Kernel()
+            ker = Matern32Kernel()
             w_interval = [-1.5, 1.5]
             x_interval = [-3.0, 3.0]
 
@@ -61,7 +61,7 @@ end
         @testset "Scaled" begin
             # ker = Matern52Kernel()
             ker = with_lengthscale(ker, 0.7)
-            w_interval = [-1.5, 1.5]
+            w_interval = 1.5
             t_interval = [0.0, 3.5]
 
             test_spectral_density(ker, w_interval, t_interval; show_plot)
