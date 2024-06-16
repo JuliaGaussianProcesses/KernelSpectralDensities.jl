@@ -56,11 +56,8 @@ struct SpectralDensity{K<:KernelFunctions.Kernel,D<:Distribution} <: AbstractSpe
         end
 
         sk, l = _deconstruct_kernel(kernel, dim)
-        if dim == 1
-            d = _spectral_distribution(sk, l)
-        else
-            d = _spectral_distribution(sk, l)
-        end
+        d = _spectral_distribution(sk, l)
+
         return new{typeof(kernel),typeof(d)}(kernel, d)
     end
 end
@@ -93,8 +90,8 @@ function _deconstruct_kernel(
     return ker.kernel, l
 end
 
-function _deconstruct_kernel(ker::TransformedKernel)
-    return throw(MethodError(_deconstruct_kernel, (ker,)))
+function _deconstruct_kernel(ker::TransformedKernel, dim::Int)
+    return throw(MethodError(_deconstruct_kernel, (ker, dim)))
 end
 
 function _spectral_distribution(ker::KernelFunctions.Kernel, l)

@@ -2,11 +2,13 @@ using KernelSpectralDensities
 using Test
 
 @testset "Fallback" begin
-    ker = ZeroKernel()
+    ker = ConstantKernel()
 
-    S = SpectralDensity(ker, 1)
+    @test_throws MethodError SpectralDensity(ker, 1)
 
-    @test_throws ErrorException S(1.0)
+    kert = ker ∘ SelectTransform(1.0)
+
+    @test_throws MethodError SpectralDensity(kert, 1)
 end
 
 @testset "Dimension check" begin
