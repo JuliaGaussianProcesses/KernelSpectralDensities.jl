@@ -1,8 +1,7 @@
-include("test_utils.jl")
-
 if (!@isdefined RUN_TESTS) || !RUN_TESTS
     using CairoMakie
     show_plot = true
+    include("test_utils.jl")
 else
     show_plot = false
 end
@@ -19,11 +18,11 @@ end
 
         @testset "Scaled" begin
             # ker = Matern32Kernel()
-            ker = with_lengthscale(ker, 0.7)
+            kert = with_lengthscale(ker, 0.7)
             w_interval = 2.0
             t_interval = [0.0, 3.5]
 
-            test_spectral_density(ker, w_interval, t_interval; show_plot)
+            test_spectral_density(kert, w_interval, t_interval; show_plot)
         end
     end
 
@@ -38,11 +37,11 @@ end
 
         @testset "Scaled" begin
             # ker = Matern32Kernel()
-            ker = with_lengthscale(ker, 0.6)
+            kert = with_lengthscale(ker, 0.6)
             w_interval = [-2.0, 2.0]
             x_interval = [-3.5, 3.5]
 
-            f = test_2Dspectral_density(ker, w_interval, x_interval; show_plot)
+            f = test_2Dspectral_density(kert, w_interval, x_interval; show_plot)
         end
     end
 end
@@ -60,11 +59,11 @@ end
 
         @testset "Scaled" begin
             # ker = Matern52Kernel()
-            ker = with_lengthscale(ker, 0.7)
+            kert = with_lengthscale(ker, 0.7)
             w_interval = 1.5
             t_interval = [0.0, 3.5]
 
-            test_spectral_density(ker, w_interval, t_interval; show_plot)
+            test_spectral_density(kert, w_interval, t_interval; show_plot)
         end
     end
 
@@ -79,11 +78,11 @@ end
 
         @testset "Scaled" begin
             # ker = Matern52Kernel()
-            ker = with_lengthscale(ker, 0.6)
+            kert = with_lengthscale(ker, 0.6)
             w_interval = [-2.0, 2.0]
             x_interval = [-3.5, 3.5]
 
-            f = test_2Dspectral_density(ker, w_interval, x_interval; show_plot)
+            f = test_2Dspectral_density(kert, w_interval, x_interval; show_plot)
         end
     end
 end
@@ -101,11 +100,11 @@ end
 
         @testset "Scaled" begin
             # ker = MaternKernel(; ν=7 / 2)
-            ker = with_lengthscale(ker, 0.7)
+            kert = with_lengthscale(ker, 0.7)
             w_interval = 1.2
             t_interval = [0.0, 3.5]
 
-            test_spectral_density(ker, w_interval, t_interval; show_plot)
+            test_spectral_density(kert, w_interval, t_interval; show_plot)
         end
     end
 
@@ -120,10 +119,10 @@ end
     end
     @testset "Scaled" begin
         # ker = MaternKernel(; ν=7 / 2)
-        ker = with_lengthscale(ker, 0.6)
+        kert = with_lengthscale(ker, 0.6)
         w_interval = [-2.0, 2.0]
         x_interval = [-3.5, 3.5]
 
-        f = test_2Dspectral_density(ker, w_interval, x_interval; show_plot)
+        f = test_2Dspectral_density(kert, w_interval, x_interval; show_plot)
     end
 end

@@ -9,6 +9,8 @@ const RUN_TESTS = true
 
 @info "Packages Loaded"
 
+include("test_utils.jl")
+
 @testset "Base" begin
     include("base.jl")
 end
