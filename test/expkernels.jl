@@ -1,6 +1,6 @@
 include("test_utils.jl")
 
-if !isdefined(Base, :RUN_TESTS) || !RUN_TESTS
+if (!@isdefined RUN_TESTS) || !RUN_TESTS
     using CairoMakie
     show_plot = true
 else
