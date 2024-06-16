@@ -5,6 +5,8 @@ using FastGaussQuadrature
 using StatsBase
 using StableRNGs
 
+const RUN_TESTS = true
+
 @info "Packages Loaded"
 
 include("test_utils.jl")
@@ -15,6 +17,8 @@ end
 
 @testset "SpectralDensities" begin
     include("expkernels.jl")
+
+    include("matern.jl")
 end
 
 @testset "Feature functions" begin
