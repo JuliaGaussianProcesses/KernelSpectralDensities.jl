@@ -24,5 +24,7 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/JuliaGaussianProcesses/KernelSpectralDensities.jl", devbranch="main"
+    repo="github.com/JuliaGaussianProcesses/KernelSpectralDensities.jl", 
+    devbranch="main",
+    push_preview = true
 )
