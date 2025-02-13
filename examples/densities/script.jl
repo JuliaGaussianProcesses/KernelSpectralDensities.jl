@@ -42,7 +42,7 @@ for (key, ker) in kers
 end
 axislegend()
 f
-DisplayAs.Text(DisplayAs.PNG(f)) #src
+DisplayAs.PNG(f) #src #md
 
 # Now we can use a function from KernelSpectralDensities.jl to 
 # get its spectral density.
@@ -61,7 +61,7 @@ for (key, ker) in kers
 end
 axislegend()
 f
-DisplayAs.Text(DisplayAs.PNG(f)) #src
+DisplayAs.PNG(f) #src #md
 
 # ## Recovering the kernel
 # We can recover the kernel by integrating the spectral density over all frequencies.
@@ -91,4 +91,4 @@ lines!(ax, τv, k.(τv); label="kernel")
 lines!(ax, τv, ks.(τv); label="spectral approx")
 axislegend()
 f
-DisplayAs.Text(DisplayAs.PNG(f)) #src
+DisplayAs.PNG(f) #src #md
