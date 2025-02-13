@@ -42,7 +42,7 @@ for (key, ker) in kers
 end
 axislegend()
 f
-DisplayAs.PNG(f) #src #md
+DisplayAs.PNG(f) #md # hide
 
 # Now we can use a function from KernelSpectralDensities.jl to 
 # get its spectral density.
@@ -61,14 +61,14 @@ for (key, ker) in kers
 end
 axislegend()
 f
-DisplayAs.PNG(f) #src #md
+DisplayAs.PNG(f) #md # hide
 
 # ## Recovering the kernel
 # We can recover the kernel by integrating the spectral density over all frequencies.
 # 
 # First, we we define the stationary function and some interals
 ker = kers["Matern3/2"]
-k(t) = ker(0, t)
+k(t) = ker(0, t);
 
 # For the numerical integration we use the GaussLegendre quadrature schema, 
 # which is more accurate and efficient than equidistant intervals.  
@@ -80,7 +80,7 @@ wv, weights = gausslegendre(300)
 wv = (wv .+ 1) ./ 2 * (w_interval[2] - w_interval[1]) .+ w_interval[1]
 c = (w_interval[2] - w_interval[1]) / 2
 
-ks(t) = c * sum(S.(wv) .* cos.(2 * π * wv * t) .* weights)
+ks(t) = c * sum(S.(wv) .* cos.(2 * π * wv * t) .* weights);
 
 # ## Results
 # We see that we indeed recover the kernel from the spectral density, 
@@ -91,4 +91,4 @@ lines!(ax, τv, k.(τv); label="kernel")
 lines!(ax, τv, ks.(τv); label="spectral approx")
 axislegend()
 f
-DisplayAs.PNG(f) #src #md
+DisplayAs.PNG(f) #md # hide
