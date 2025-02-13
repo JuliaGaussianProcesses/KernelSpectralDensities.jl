@@ -1,5 +1,5 @@
 
-# # Spectral Density of a Kernel
+# # Spectral Densities
 # All stationary kernels can have a spectral density, which is the Fourier transform 
 # of the function $k(\tau) = k(x, x')$, where $\tau = t - t'$.
 #
@@ -16,38 +16,55 @@ using KernelSpectralDensities
 using Distributions
 using LinearAlgebra
 using FastGaussQuadrature
+using OrderedCollections
 # using StatsBase ## not sure I need it in this notebook? #src
 
 using CairoMakie
 
 # ## Intro
-# First we define some intervals
-τ_interval = [0., 4.]
-τv = range(τ_interval..., length=60)
+# First we define a few kernels, from KernelFunctions.jl,
+# which is re-exported by KernelSpectralDensities.
+kers = OrderedDict(
+    "Matern3/2" => Matern32Kernel(),
+    "Matern3/2 0.8" => with_lengthscale(Matern32Kernel(), 0.8),
+    "Matern3/2 1.2" => with_lengthscale(Matern32Kernel(), 1.2),
+)
 
-w_interval = [-2.0, 2.0];
+# We plot them here for illustration.
+τ_interval = [0.0, 4.0]
+τv = range(τ_interval...; length=60)
 
-# Then we define a simple matern kernel with a lengthscale, 
-# so that we don't keep it too simple.
-### ToDo: Do multiple kernel here, for comparison #src
-ker = Matern32Kernel()
-l = 0.5
-ker = with_lengthscale(ker, l)
+f = Figure()
+ax = Axis(f[1, 1]; xlabel="τ", ylabel="k(τ)")
+for (key, ker) in kers
+    lines!(ax, τv, ker.(0, τv); label=key)
+end
+axislegend()
+f
 
 # Now we can use a function from KernelSpectralDensities.jl to 
 # get its spectral density.
 # The resulting object allows us to evaluate the spectral density for any frequency. 
-S = SpectralDensity(ker, 1)
-S(0.2)
+S = SpectralDensity(kers["Matern3/2"], 1)
+S(0.5)
 
 # We can also plot it over the interval we defined to see its shape.
-w_plot = range(w_interval..., length=151)
-lines(w_plot, S.(w_plot), label="spectral density")
+w_plot = range(-1, 1; length=151)
+
+f = Figure()
+ax = Axis(f[1, 1]; xlabel="ω", ylabel="S(ω)")
+for (key, ker) in kers
+    Sp = SpectralDensity(ker, 1)
+    lines!(ax, w_plot, Sp.(w_plot); label=key)
+end
+axislegend()
+f
 
 # ## Recovering the kernel
 # We can recover the kernel by integrating the spectral density over all frequencies.
 # 
 # First, we we define the stationary function and some interals
+ker = kers["Matern3/2"]
 k(t) = ker(0, t)
 
 # For the numerical integration we use the GaussLegendre quadrature schema, 
@@ -55,7 +72,8 @@ k(t) = ker(0, t)
 # This allows us to define a new function, which numerically approximates 
 # the inverse Fourier transform of the spectral density.
 
-wv, weights = gausslegendre(500)
+w_interval = [-2.0, 2.0]
+wv, weights = gausslegendre(300)
 wv = (wv .+ 1) ./ 2 * (w_interval[2] - w_interval[1]) .+ w_interval[1]
 c = (w_interval[2] - w_interval[1]) / 2
 
@@ -65,10 +83,8 @@ ks(t) = c * sum(S.(wv) .* cos.(2 * π * wv * t) .* weights)
 # We see that we indeed recover the kernel from the spectral density, 
 # with only a small error from the numerical integration.
 f = Figure()
-ax = Axis(f[1, 1])
-lines!(ax, τv, k.(τv), label="kernel")
-lines!(ax, τv, ks.(τv), label="spectral approx")
+ax = Axis(f[1, 1]; xlabel="τ", ylabel="k(τ)")
+lines!(ax, τv, k.(τv); label="kernel")
+lines!(ax, τv, ks.(τv); label="spectral approx")
 axislegend()
 f
-
-

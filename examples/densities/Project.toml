@@ -5,6 +5,7 @@ FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"
 KernelSpectralDensities = "027d52a2-76e5-4228-9bfe-bc7e0f5a8348"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
+OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 
 [compat]
 Literate = "2"
