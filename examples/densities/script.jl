@@ -34,7 +34,7 @@ kers = OrderedDict(
 τ_interval = [0.0, 4.0]
 τv = range(τ_interval...; length=60)
 
-f = Figure()
+f = Figure(; size=(600, 400))
 ax = Axis(f[1, 1]; xlabel="τ", ylabel="k(τ)")
 for (key, ker) in kers
     lines!(ax, τv, ker.(0, τv); label=key)
@@ -51,7 +51,7 @@ S(0.5)
 # We can also plot it over the interval we defined to see its shape.
 w_plot = range(-1, 1; length=151)
 
-f = Figure()
+f = Figure(; size=(600, 400))
 ax = Axis(f[1, 1]; xlabel="ω", ylabel="S(ω)")
 for (key, ker) in kers
     Sp = SpectralDensity(ker, 1)
@@ -82,7 +82,7 @@ ks(t) = c * sum(S.(wv) .* cos.(2 * π * wv * t) .* weights)
 # ## Results
 # We see that we indeed recover the kernel from the spectral density, 
 # with only a small error from the numerical integration.
-f = Figure()
+f = Figure(; size=(600, 400))
 ax = Axis(f[1, 1]; xlabel="τ", ylabel="k(τ)")
 lines!(ax, τv, k.(τv); label="kernel")
 lines!(ax, τv, ks.(τv); label="spectral approx")
