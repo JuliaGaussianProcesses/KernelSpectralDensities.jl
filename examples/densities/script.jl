@@ -29,7 +29,7 @@ kers = OrderedDict(
     "Matern3/2" => Matern32Kernel(),
     "Matern3/2 0.8" => with_lengthscale(Matern32Kernel(), 0.8),
     "Matern3/2 1.2" => with_lengthscale(Matern32Kernel(), 1.2),
-)
+);
 
 # We plot them here for illustration.
 τ_interval = [0.0, 4.0]
@@ -42,7 +42,7 @@ for (key, ker) in kers
 end
 axislegend()
 f
-DisplayAs.PNG(f) #md # hide
+DisplayAs.PNG(f) # hide #md
 
 # Now we can use a function from KernelSpectralDensities.jl to 
 # get its spectral density.
@@ -61,7 +61,7 @@ for (key, ker) in kers
 end
 axislegend()
 f
-DisplayAs.PNG(f) #md # hide
+DisplayAs.PNG(f) # hide #md
 
 # ## Recovering the kernel
 # We can recover the kernel by integrating the spectral density over all frequencies.
@@ -91,4 +91,4 @@ lines!(ax, τv, k.(τv); label="kernel")
 lines!(ax, τv, ks.(τv); label="spectral approx")
 axislegend()
 f
-DisplayAs.PNG(f) #md # hide
+DisplayAs.PNG(f) # hide #md
