@@ -20,6 +20,7 @@ using OrderedCollections
 # using StatsBase ## not sure I need it in this notebook? #src
 
 using CairoMakie
+CairoMakie.activate!(; type="png") #src
 
 # ## Intro
 # First we define a few kernels, from KernelFunctions.jl,
