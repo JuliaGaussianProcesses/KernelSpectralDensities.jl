@@ -1,10 +1,10 @@
 
-# # Kernel Densities
+# # Spectral Density of a Kernel
 # All stationary kernels can have a spectral density, which is the Fourier transform 
 # of the function $k(\tau) = k(x, x')$, where $\tau = t - t'$.
 #
 # In other words, the spectral density is defined as
-### ToDo: Check with my definition.
+### ToDo: Check with my definition. #src
 # ```math
 #   S(\omega) = \int_{-\infty}^{\infty} k(\tau) \exp(-i \omega \tau) d\tau
 # ```
@@ -16,7 +16,7 @@ using KernelSpectralDensities
 using Distributions
 using LinearAlgebra
 using FastGaussQuadrature
-# using StatsBase ## not sure I need it in this notebook?
+# using StatsBase ## not sure I need it in this notebook? #src
 
 using CairoMakie
 
@@ -25,11 +25,11 @@ using CairoMakie
 τ_interval = [0., 4.]
 τv = range(τ_interval..., length=60)
 
-w_interval = [-2.0, 2.0]
+w_interval = [-2.0, 2.0];
 
 # Then we define a simple matern kernel with a lengthscale, 
 # so that we don't keep it too simple.
-### ToDo: Do multiple kernel here, for comparison
+### ToDo: Do multiple kernel here, for comparison #src
 ker = Matern32Kernel()
 l = 0.5
 ker = with_lengthscale(ker, l)
@@ -62,7 +62,8 @@ c = (w_interval[2] - w_interval[1]) / 2
 ks(t) = c * sum(S.(wv) .* cos.(2 * π * wv * t) .* weights)
 
 # ## Results
-# We see that 
+# We see that we indeed recover the kernel from the spectral density, 
+# with only a small error from the numerical integration.
 f = Figure()
 ax = Axis(f[1, 1])
 lines!(ax, τv, k.(τv), label="kernel")
