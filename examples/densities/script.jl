@@ -20,7 +20,7 @@ using OrderedCollections
 # using StatsBase ## not sure I need it in this notebook? #src
 
 using CairoMakie
-CairoMakie.activate!(; type="png") #src
+using DisplayAs
 
 # ## Intro
 # First we define a few kernels, from KernelFunctions.jl,
@@ -42,6 +42,7 @@ for (key, ker) in kers
 end
 axislegend()
 f
+DisplayAs.Text(DisplayAs.PNG(f)) #src
 
 # Now we can use a function from KernelSpectralDensities.jl to 
 # get its spectral density.
@@ -60,6 +61,7 @@ for (key, ker) in kers
 end
 axislegend()
 f
+DisplayAs.Text(DisplayAs.PNG(f)) #src
 
 # ## Recovering the kernel
 # We can recover the kernel by integrating the spectral density over all frequencies.
@@ -89,3 +91,4 @@ lines!(ax, τv, k.(τv); label="kernel")
 lines!(ax, τv, ks.(τv); label="spectral approx")
 axislegend()
 f
+DisplayAs.Text(DisplayAs.PNG(f)) #src
