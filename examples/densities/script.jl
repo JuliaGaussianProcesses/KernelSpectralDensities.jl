@@ -11,7 +11,7 @@
 #
 # In this notebook we show how we can recover the kernel from its spectral density.
 
-# ## Load required packages
+# **Load required packages**
 using KernelSpectralDensities
 using Distributions
 using LinearAlgebra

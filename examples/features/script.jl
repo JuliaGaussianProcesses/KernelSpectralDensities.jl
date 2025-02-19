@@ -5,7 +5,7 @@
 # In this notebook we show the two feature functions implemented in KernelSpectralDensities.jl 
 # and how to use them.
 
-# ## Load required packages
+# **Load required packages**
 using KernelSpectralDensities
 using StatsBase
 using CairoMakie
@@ -31,7 +31,7 @@ S = SpectralDensity(ker, 1)
 #
 # It is defined as
 # ```math
-#     \sqrt{2 / l}  \cos(2  π  ((w^T  x) + b))
+#     \varphi(x) = \sqrt{2 / l}  \cos(2  π  ((w^T  x) + b))
 # ```
 # where `w` is sampled from the spectral density `S`, 
 # `b` is uniformly sampled from `[0, 2π]` 
@@ -49,7 +49,7 @@ x = range(0, 5; length=100)
 f = Figure(; size=(600, 400))
 ax = Axis(f[1, 1]; xlabel="x", ylabel="rff(x)", title="ShiftedRFF")
 series!(ax, x, reduce(hcat, srff.(x)); labels=["srff $i" for i in 1:4])
-axislegend(ax; position=:ct)
+axislegend(ax; position=:rt)
 f
 DisplayAs.PNG(f) #hide #md
 
@@ -59,7 +59,7 @@ DisplayAs.PNG(f) #hide #md
 #
 # It is defined as
 # ```math
-#     \sqrt{1 / l} [\cos(2 π w' x),  \sin(2 π w' x)]
+#     \varphi(x) = \sqrt{1 / l} \begin{pmatrix} \cos(2 π w' x) & \sin(2 π w' x) \end{pmatrix} 
 # ```
 # where `w` is sampled from the spectral density `S`,
 # with a total of `l/2` sampled frequencies.
@@ -76,8 +76,9 @@ drff(1.0)
 f = Figure(; size=(600, 400))
 ax = Axis(f[1, 1]; xlabel="x", ylabel="rff(x)", title="Double RFF")
 series!(ax, x, reduce(hcat, drff.(x)); labels=["drff $i" for i in 1:4])
-axislegend(ax; position=:ct)
+axislegend(ax; position=:rt)
 f
 DisplayAs.PNG(f) #hide #md
 
 # ## Approximating a kernel
+# Tbd
