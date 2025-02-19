@@ -20,6 +20,10 @@ using DisplayAs #hide
 # the Fourier transform, which we saw in add link from other example. 
 # KernelSpectralDensities implements two types of random Fourier features, 
 # `ShiftedRFF` and `DoubleRFF`.
+# 
+# For this example we use the simple squared exponential kernel.
+ker = SqExponentialKernel()
+S = SpectralDensity(ker, 1)
 
 # ## ShiftedRFF
 # The `ShiftedRFF` feature function is somewhat more common, and has 
