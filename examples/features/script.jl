@@ -7,7 +7,6 @@
 
 # ## Load required packages
 using KernelSpectralDensities
-using AbstractGPs
 using StatsBase
 using CairoMakie
 using DisplayAs #hide
