@@ -4,6 +4,7 @@
 using KernelSpectralDensities
 using AbstractGPs
 using StatsBase
+using AbstractGPsMakie
 using CairoMakie
 using DisplayAs #hide
 

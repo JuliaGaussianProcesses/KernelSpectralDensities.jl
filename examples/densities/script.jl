@@ -4,9 +4,8 @@
 # of the function $k(\tau) = k(x, x')$, where $\tau = t - t'$.
 #
 # In other words, the spectral density is defined as
-### ToDo: Check with my definition. #src
 # ```math
-#   S(\omega) = \int_{-\infty}^{\infty} k(\tau) \exp(-i \omega \tau) d\tau
+#   S(\omega) = \int_{-\infty}^{\infty} k(τ) e^{-2 \pi \omega^T \tau} d\tau
 # ```
 #
 # In this notebook we show how we can recover the kernel from its spectral density.
@@ -17,7 +16,6 @@ using Distributions
 using LinearAlgebra
 using FastGaussQuadrature
 using OrderedCollections
-# using StatsBase ## not sure I need it in this notebook? #src
 
 using CairoMakie
 using DisplayAs #hide
