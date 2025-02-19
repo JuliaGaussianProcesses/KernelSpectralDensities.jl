@@ -6,7 +6,7 @@ abstract type AbstractRFF end
 
 """
     ShiftedRFF([rng::AbstractRNG], S::SpectralDensity, l::Int)
-Random Fourier feature function with a random shift, projecting an input x into l dimensionional feature space. 
+Random Fourier feature function with a random shift, projecting an input `x` into `l` dimensionional feature space. 
     
 # Definition
     
@@ -51,7 +51,7 @@ end
 
 """
     DoubleRFF([rng::AbstractRNG], S::SpectralDensity, l::Int)
-Random Fourier feature function with cos and sin terms, projecting an input x into l dimensionional feature space.
+Random Fourier feature function with cos and sin terms, projecting an input `x` into `l` dimensionional feature space.
 
 # Definition
 
