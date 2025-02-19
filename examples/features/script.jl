@@ -9,31 +9,20 @@
 using KernelSpectralDensities
 using AbstractGPs
 using StatsBase
-# using LinearAlgebra
-using AbstractGPsMakie
 using CairoMakie
+using DisplayAs #hide
 
 # ## Intro
-# We use the AbstractGPs package to define a stationary GP prior,
-# in other words, a GP that has not been conditioned on data yet.
+# In general, feature functions allow us to project an input into a higher-dimensional space,
+# which is useful for a variety of tasks.
+# For example, we can use them to approximate a kernel using the "kernel trick".
 
-ker = SqExponentialKernel()
-S = SpectralDensity(ker, 1)
-
-gp = GP(ker)
-
-# We can also plot this GP using AbstractGPsMakie.jl, but 
-# we don't see very much, since we have a simple GP with 
-# zero mean and a variance of 1. 
-f = plot(0:0.1:1, gp; size=(600, 400))
-DisplayAs.PNG(f) #hide #md
-
-# ## Random Fourier Features
+# A special class of feature functions are "random Fourier features", derived from 
+# the Fourier transform, which we saw in add link from other example. 
 # KernelSpectralDensities implements two types of random Fourier features, 
 # `ShiftedRFF` and `DoubleRFF`.
-# A feature function projects its input into a higher-dimensional "features" space.,
 
-# ### ShiftedRFF
+# ## ShiftedRFF
 # The `ShiftedRFF` feature function is somewhat more common, and has 
 # been used in papers such as [Efficiently sampling functions from Gaussian process posteriors](https://proceedings.mlr.press/v119/wilson20a.html).
 #
@@ -61,7 +50,7 @@ axislegend(ax; position=:ct)
 f
 DisplayAs.PNG(f) #hide #md
 
-# ### DoubleRFF
+# ## DoubleRFF
 # The `DoubleRFF` feature function is less common, but is theoretically
 # equivalent to the `ShiftedRFF` feature function.
 #
@@ -87,3 +76,5 @@ series!(ax, x, reduce(hcat, drff.(x)); labels=["drff $i" for i in 1:4])
 axislegend(ax; position=:ct)
 f
 DisplayAs.PNG(f) #hide #md
+
+# ## Approximating a kernel
