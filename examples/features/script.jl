@@ -19,14 +19,14 @@ using DisplayAs #hide
 # A special class of feature functions are "random Fourier features", derived from 
 # the Fourier transform, which we saw in add link from other example. 
 # KernelSpectralDensities implements two types of random Fourier features, 
-# [`ShiftedRFF`](@ref) and [`DoubleRFF`](@ref).
+# [`ShiftedRFF`](@ref KernelSpectralDensities.ShiftedRFF) and [`DoubleRFF`](@ref KernelSpectralDensities.DoubleRFF).
 # 
 # For this example we use the simple squared exponential kernel.
 ker = SqExponentialKernel()
 S = SpectralDensity(ker, 1);
 
 # ## ShiftedRFF
-# The [`ShiftedRFF`](@ref) feature function is somewhat more common, and has 
+# The [`ShiftedRFF`](@ref KernelSpectralDensities.ShiftedRFF) feature function is somewhat more common, and has 
 # been used in papers such as [Efficiently sampling functions from Gaussian process posteriors](https://proceedings.mlr.press/v119/wilson20a.html).
 # It is defined as
 # ```math
