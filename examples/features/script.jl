@@ -120,3 +120,20 @@ f
 norm(ker.(0, x_plot) .- kt1000.(0, x_plot))
 
 ## Comparing the RFFs
+# We can use to compare the two feature functions
+
+function kt_error(ker, rff, S, l, x)
+    rff = rff(S, l)
+    kt(x, y) = dot(rff(x), rff(y))
+    return norm(ker.(0, x) .- kt.(0, x))
+end
+
+srff_err = mean([kt_error(ker, ShiftedRFF, S, 100, x_plot) for _ in 1:5000])
+#-
+drff_err = mean([kt_error(ker, DoubleRFF, S, 100, x_plot) for _ in 1:5000])
+
+# We see that the double rff has a lower average error. This 
+# continues to hold for higher number of features.
+srff_err = mean([kt_error(ker, ShiftedRFF, S, 1000, x_plot) for _ in 1:5000])
+#-
+drff_err = mean([kt_error(ker, DoubleRFF, S, 1000, x_plot) for _ in 1:5000])
