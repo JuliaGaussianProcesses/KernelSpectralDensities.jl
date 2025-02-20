@@ -28,7 +28,6 @@ S = SpectralDensity(ker, 1);
 # ## ShiftedRFF
 # The [`ShiftedRFF`](@ref) feature function is somewhat more common, and has 
 # been used in papers such as [Efficiently sampling functions from Gaussian process posteriors](https://proceedings.mlr.press/v119/wilson20a.html).
-#
 # It is defined as
 # ```math
 #     \varphi_i(x) = \sqrt{2 / l}  \cos(2  π  ((w_i^T  x) + b_i))
@@ -56,14 +55,12 @@ DisplayAs.PNG(f) #hide #md
 # ## DoubleRFF
 # The `DoubleRFF` feature function is less common, but is theoretically
 # equivalent to the `ShiftedRFF` feature function.
-#
 # It is defined as
 # ```math
 #     \varphi(x) = \sqrt{1 / l} \begin{pmatrix} \cos(2 π w' x) & \sin(2 π w' x) \end{pmatrix} 
 # ```
 # where $w'$ is sampled from the spectral density $S$,
 # with a total of $l/2$ sampled frequencies.
-#
 # Here, each function is effectively two feature functions in one, 
 # so specifying $l$ will result in $l/2$ samples but an $l$ dimensional 
 # feature vector.
@@ -102,25 +99,26 @@ f
 DisplayAs.PNG(f) #hide #md
 
 # Clearly this is not quite correct, and we can quantify this 
-# by checking the error
+# by checking the error.
 
 norm(ker.(0, x_plot) .- kt.(0, x_plot))
 
-# Fortunately, we can improve the 
-# approximation by using more features
+# Fortunately, we can improve the approximation by using more features,
 
 rff1000 = ShiftedRFF(S, 5000)
 kt1000(x, y) = dot(rff1000(x), rff1000(y))
 
 lines!(ax, x_plot, kt1000.(0, x_plot); label="KT, l=1000")
+axislegend(ax)
 f
 DisplayAs.PNG(f) #hide #md
 
-# We also see that the error reduces
+# which also reduces the error.
 norm(ker.(0, x_plot) .- kt1000.(0, x_plot))
 
 # ## Comparing the RFFs
-# We can use to compare the two feature functions
+# In the section above we used the `ShiftedRFF` feature function, but what about the `DoubleRFF`?
+# Let's compare the two!. First we define some helper functions.
 
 function kt_error(ker, rff, S, l, x)
     rff = rff(S, l)
@@ -132,6 +130,8 @@ function mean_kt_error(ker, rff, S, l, x, n)
     return mean([kt_error(ker, rff, S, l, x) for _ in 1:n])
 end
 
+# Now we compute the mean error for both feature functions, using 100 features when recovering 
+# the original kernel. To reduce the effect of randomness, we average over 5000 runs. 
 srff_err = mean_kt_error(ker, ShiftedRFF, S, 100, x_plot, 5000)
 #-
 drff_err = mean_kt_error(ker, DoubleRFF, S, 100, x_plot, 5000)
@@ -145,10 +145,9 @@ drff_err = mean_kt_error(ker, DoubleRFF, S, 1000, x_plot, 5000)
 # ## Comparison, continued
 # Lastly, we show a loglog plot of the mean error as a function 
 # of the number of features. 
-#
-# We see that the error reduction with the number of features is 
-# the same for both options, but the DualRFF error is consistently 
-# lower. 
+# We see that both feature functions have the order of error scaling,
+# but the DualRFF error has a small offset, resulting in a lower error. 
+# This is especially impactful for a small number of features.
 l_plot = [10, 50, 100, 500, 1000]
 srff_comp = [mean_kt_error(ker, ShiftedRFF, S, l, x_plot, 5000) for l in l_plot]
 drff_comp = [mean_kt_error(ker, DoubleRFF, S, l, x_plot, 5000) for l in l_plot]
