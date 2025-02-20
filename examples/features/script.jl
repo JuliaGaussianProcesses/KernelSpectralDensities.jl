@@ -115,11 +115,12 @@ kt1000(x, y) = dot(rff1000(x), rff1000(y))
 
 lines!(ax, x_plot, kt1000.(0, x_plot); label="KT, l=1000")
 f
+DisplayAs.PNG(f) #hide #md
 
 # We also see that the error reduces
 norm(ker.(0, x_plot) .- kt1000.(0, x_plot))
 
-## Comparing the RFFs
+# ## Comparing the RFFs
 # We can use to compare the two feature functions
 
 function kt_error(ker, rff, S, l, x)
@@ -128,12 +129,35 @@ function kt_error(ker, rff, S, l, x)
     return norm(ker.(0, x) .- kt.(0, x))
 end
 
-srff_err = mean([kt_error(ker, ShiftedRFF, S, 100, x_plot) for _ in 1:5000])
+function mean_kt_error(ker, rff, S, l, x, n)
+    return mean([kt_error(ker, rff, S, l, x) for _ in 1:n])
+end
+
+srff_err = mean_kt_error(ker, ShiftedRFF, S, 100, x_plot, 5000)
 #-
-drff_err = mean([kt_error(ker, DoubleRFF, S, 100, x_plot) for _ in 1:5000])
+drff_err = mean_kt_error(ker, DoubleRFF, S, 100, x_plot, 5000)
 
 # We see that the double rff has a lower average error. This 
 # continues to hold for higher number of features.
-srff_err = mean([kt_error(ker, ShiftedRFF, S, 1000, x_plot) for _ in 1:5000])
+srff_err = mean_kt_error(ker, ShiftedRFF, S, 1000, x_plot, 5000)
 #-
-drff_err = mean([kt_error(ker, DoubleRFF, S, 1000, x_plot) for _ in 1:5000])
+drff_err = mean_kt_error(ker, DoubleRFF, S, 1000, x_plot, 5000)
+
+# ## Comparison, continued
+# Lastly, we show a loglog plot of the mean error as a function 
+# of the number of features. 
+#
+# We see that the error reduction with the number of features is 
+# the same for both options, but the DualRFF error is consistently 
+# lower. 
+l_plot = [10, 50, 100, 500, 1000]
+srff_comp = [mean_kt_error(ker, ShiftedRFF, S, l, x_plot, 5000) for l in l_plot]
+drff_comp = [mean_kt_error(ker, DoubleRFF, S, l, x_plot, 5000) for l in l_plot]
+
+f = Figure(; size=(600, 400))
+ax = Axis(f[1, 1]; xlabel="l", ylabel="mean err", title="", xscale=log10, yscale=log10)
+lines!(ax, l_plot, srff_comp; label="ShiftedRFF")
+lines!(ax, l_plot, drff_comp; label="DoubleRFF")
+axislegend(ax)
+f
+DisplayAs.PNG(f) #hide #md
