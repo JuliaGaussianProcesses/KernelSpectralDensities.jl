@@ -1,7 +1,6 @@
 # # Random Fourier Features
 # One of the reasons to be interested in the spectral density of a kernel is 
 # that it allows us to approximate a GP Prior.
-# 
 # In this notebook we show the two feature functions implemented in KernelSpectralDensities.jl 
 # and how to use them.
 
@@ -20,23 +19,23 @@ using DisplayAs #hide
 # A special class of feature functions are "random Fourier features", derived from 
 # the Fourier transform, which we saw in add link from other example. 
 # KernelSpectralDensities implements two types of random Fourier features, 
-# `ShiftedRFF` and `DoubleRFF`.
+# [`ShiftedRFF`](@ref) and [`DoubleRFF`](@ref).
 # 
 # For this example we use the simple squared exponential kernel.
 ker = SqExponentialKernel()
-S = SpectralDensity(ker, 1)
+S = SpectralDensity(ker, 1);
 
 # ## ShiftedRFF
-# The `ShiftedRFF` feature function is somewhat more common, and has 
+# The [`ShiftedRFF`](@ref) feature function is somewhat more common, and has 
 # been used in papers such as [Efficiently sampling functions from Gaussian process posteriors](https://proceedings.mlr.press/v119/wilson20a.html).
 #
 # It is defined as
 # ```math
 #     \varphi_i(x) = \sqrt{2 / l}  \cos(2  π  ((w_i^T  x) + b_i))
 # ```
-# where `w_i` is sampled from the spectral density `S`, 
-# `b_i` is uniformly sampled from `[0, 2π]` 
-# and `l` is the number of sampled frequencies, which is also 
+# where $w_i$ is sampled from the spectral density $S$, 
+# $b_i$ is uniformly sampled from $[0, 2π]$ 
+# and $l$ is the number of sampled frequencies, which is also 
 # the number of features.
 #
 # We generate a set of 4 feature functions, which we can evaluate 
@@ -62,11 +61,11 @@ DisplayAs.PNG(f) #hide #md
 # ```math
 #     \varphi(x) = \sqrt{1 / l} \begin{pmatrix} \cos(2 π w' x) & \sin(2 π w' x) \end{pmatrix} 
 # ```
-# where `w` is sampled from the spectral density `S`,
-# with a total of `l/2` sampled frequencies.
+# where $w'$ is sampled from the spectral density $S$,
+# with a total of $l/2$ sampled frequencies.
 #
 # Here, each function is effectively two feature functions in one, 
-# so specifying `l` will result in `l/2` samples but an `l` dimensional 
+# so specifying $l$ will result in $l/2$ samples but an $l$ dimensional 
 # feature vector.
 # 
 # We again generate a set of 4 feature functions. 
