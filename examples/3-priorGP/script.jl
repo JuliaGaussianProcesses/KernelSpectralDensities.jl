@@ -70,7 +70,7 @@ function evaluate_samples(y_sample)
     merr = norm(m .- ms)
     cs = cov(y_sample)
     cerr = norm(K .- cs)
-    print("Mean error: $merr, Covariance error: $cerr\n")
+    display("Mean error: $merr, Covariance error: $cerr")
     display(permutedims(ms))
     display(cs)
     return nothing
@@ -83,20 +83,18 @@ evaluate_samples(y_sample)
 # If we sample a lot more functions however, we get closer to the anaytical result
 n_manysamples = 1000
 y_sample = [naive_sample(gp, x_sample) for _ in 1:n_manysamples]
-mean(y_sample)
-#-
-cov(y_sample)
+evaluate_samples(y_sample)
 
 #
 # However, there are two issues with this approach: 
 # 1. It is quite computationally expensive, since we need to calculate the Cholesky decomposition.
 # 2. Sampling at a larger number of points can cause conditionint issues, as we show below.   
 x_manysamples = range(0, 2; length=20)
+#! format: off 
 try  #hide
-    naive_sample(gp, x_manysamples)
-catch err
-    showerror(stderr, err)
-end  #hide
+naive_sample(gp, x_manysamples)
+catch err; showerror(stderr, err) end  #hide
+#! format: on 
 
 # ## RFF Sampling
 # Random Fourier features are an alternative option to sample the GP prior.
@@ -150,3 +148,5 @@ evaluate_samples(y_sample)
 # Lastly, we note that the we no longer have to worry about conditioning issues,
 # and can evaluate a given GP sample at however many points we like
 ApproximateGPSample(rff).(x_manysamples)
+
+#  
