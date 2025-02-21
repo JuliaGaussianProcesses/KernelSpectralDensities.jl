@@ -65,7 +65,7 @@ f
 DisplayAs.PNG(f) #hide #md
 
 # To evaluate the samples, we define the following function
-function evaluate_samples(y_sample)
+function evaluate_samples(y_sample, m, K)
     ms = mean(y_sample)
     merr = norm(m .- ms)
     cs = cov(y_sample)
@@ -76,24 +76,24 @@ function evaluate_samples(y_sample)
 end
 # For the small number of samples we have, the results are not very good. 
 y_sample = [naive_sample(gp, x_sample) for _ in 1:n_samples]
-evaluate_samples(y_sample)
+evaluate_samples(y_sample, m, K)
 
 #
 # If we sample a lot more functions however, we get closer to the anaytical result
 n_manysamples = 1000
 y_sample = [naive_sample(gp, x_sample) for _ in 1:n_manysamples]
-evaluate_samples(y_sample)
+evaluate_samples(y_sample, m, K)
 
 #
 # However, there are two issues with this approach: 
 # 1. It is quite computationally expensive, since we need to calculate the Cholesky decomposition.
 # 2. Sampling at a larger number of points can cause conditionint issues, as we show below.   
-x_manysamples = range(0, 2; length=20)
-#! format: off 
-try  #hide
-naive_sample(gp, x_manysamples)
-catch err; showerror(stderr, err) end  #hide
-#! format: on 
+x_sample_many = range(0, 2; length=20)
+try
+    naive_sample(gp, x_sample_many)
+catch err
+    showerror(stderr, err)
+end
 
 # ## RFF Sampling
 # Random Fourier features are an alternative option to sample the GP prior.
@@ -123,29 +123,27 @@ DisplayAs.PNG(f) #hide #md
 # Unfortunately, the mean and the covariance are worse than with the naive sampling
 # for the same number of samples. 
 y_sample = [ApproximateGPSample(rff).(x_sample) for _ in 1:n_samples]
-evaluate_samples(y_sample)
+evaluate_samples(y_sample, m, K)
 
 # However, we now have another parameter to tune: The number of features
 # By increasing the number of features, we get close to the result we saw 
 # with the naive sampling.
 rff500 = DoubleRFF(S, 500)
 y_sample = [ApproximateGPSample(rff500).(x_sample) for _ in 1:n_samples]
-evaluate_samples(y_sample)
+evaluate_samples(y_sample, m, K)
 
 # By increasing the number of GP samples, we can again improve the results in 
 # both cases. 
 # 
 # With 10 feature functions
 y_sample = [ApproximateGPSample(rff).(x_sample) for _ in 1:n_manysamples]
-evaluate_samples(y_sample)
+evaluate_samples(y_sample, m, K)
 #
 # With 500 feature functions
 y_sample = [ApproximateGPSample(rff500).(x_sample) for _ in 1:n_manysamples]
-evaluate_samples(y_sample)
+evaluate_samples(y_sample, m, K)
 
 #
-# Lastly, we note that the we no longer have to worry about conditioning issues,
+# Lastly, we note that we no longer have to worry about conditioning issues,
 # and can evaluate a given GP sample at however many points we like
-ApproximateGPSample(rff).(x_manysamples)
-
-#  
+ApproximateGPSample(rff).(x_sample_many)
