@@ -63,13 +63,18 @@ function evaluate_samples(y_sample, m, K)
     merr = norm(m .- ms)
     cs = cov(y_sample)
     cerr = norm(K .- cs)
-    println("Mean error: $merr, Covariance error: $cerr\n")
-    println(ms)
-    return cs
+    print("Mean error: $merr, Covariance error: $cerr\n")
+    return ms, cs
 end
+nothing #hide
+
 # For the small number of samples we have, the results are not very good. 
 y_sample = [naive_sample(gp, x_sample) for _ in 1:n_samples]
-evaluate_samples(y_sample, m, K)
+ms, cs = evaluate_samples(y_sample, m, K);
+#-
+ms
+#-
+cs
 
 #
 # If we sample a lot more functions however, we get closer to the anaytical result
