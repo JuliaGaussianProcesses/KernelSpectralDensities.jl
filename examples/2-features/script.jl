@@ -83,11 +83,11 @@ DisplayAs.PNG(f) #hide #md
 # ```math
 #     k(x, x') = \langle \varphi(x), \varphi(x') \rangle
 # ```
-# Comparing with the [Spectral Densities](@ref) example, we note that this
+# Comparing with the [Kernel Densities](@ref) example, we note that this
 # is effective a Monte Carlo approximation of inverse Fourier transform.
 # 
 # To demonstrate that this works, we generate some feature functions and
-# see how well they recover the kernel. 
+# see how well they recover the kernel.
 rff = ShiftedRFF(S, 100)
 kt(x, y) = dot(rff(x), rff(y))
 

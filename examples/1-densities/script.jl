@@ -1,5 +1,5 @@
 
-# # Spectral Densities
+# # Kernel Densities
 # All stationary kernels can have a spectral density, which is the Fourier transform 
 # of the function $k(\tau) = k(x, x')$, where $\tau = t - t'$.
 #
