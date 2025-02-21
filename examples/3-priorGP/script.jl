@@ -34,7 +34,7 @@ x_sample = range(0, 2; length=5)
 # To sample, we calculate the mean and covariance of the GP at these points. 
 # While we use the AbstractGPs interface, in this case the mean is just
 # a zero vector and the covariance is the kernel matrix over the sample points.
-m = mean(gp, x_sample)
+m = mean(gp, x_sample)'
 #-
 K = cov(gp, x_sample)
 # 
@@ -70,10 +70,9 @@ function evaluate_samples(y_sample)
     merr = norm(m .- ms)
     cs = cov(y_sample)
     cerr = norm(K .- cs)
-    display("Mean error: $merr, Covariance error: $cerr")
-    display(permutedims(ms))
-    display(cs)
-    return nothing
+    println("Mean error: $merr, Covariance error: $cerr\n")
+    println(ms)
+    return cs
 end
 # For the small number of samples we have, the results are not very good. 
 y_sample = [naive_sample(gp, x_sample) for _ in 1:n_samples]
