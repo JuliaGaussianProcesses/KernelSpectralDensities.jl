@@ -1,4 +1,4 @@
-# # Approximating a GP Prior
+# # Sampling a GP Prior
 
 # **Load required packages**
 using KernelSpectralDensities
@@ -23,6 +23,14 @@ gp = GP(ker)
 f = plot(0:0.1:1, gp; size=(600, 400))
 DisplayAs.PNG(f) #hide #md
 
-# ## Approximating a GP
-# One of the reasons to be interested in the spectral density of a kernel is
-# that it allows us to approximate a GP Prior.
+# ## Naive Sampling
+# If we want to draw a sample from the GP prior, the 
+# standard way is to use the Cholesky decomposition of the kernel matrix.
+#
+# In this example, we want to sample the GP as the following points
+x = range(0, 1, length=5)
+y = 
+
+# ## RFF Sampling
+# We can also use the feature functions to draw approximate samples 
+# from a GP prior. 

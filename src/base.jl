@@ -5,8 +5,8 @@ abstract type AbstractSpectralDensity end
     rand(S::AbstractSpectralDensity, [n::Int])
 
 Generate a sample [n samples] from the spectral density `S`. 
-For a spectral density over ``ω \\in R``, computing `n`` samples results in a `n` dimensional vector. 
-For a spectral density over ``ω \\in R^d, d>1``, computing `n` samples results in a `d,n` matrix. 
+For a scalar spectral density over ``ω \\in R``, computing `n` samples results in a `n` dimensional vector. 
+For a multi-dimensional spectral density over ``ω \\in R^d, d>1``, computing `n` samples results in a `d,n` matrix. 
 
 # Examples
 

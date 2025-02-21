@@ -19,7 +19,7 @@ julia> k = SqExponentialKernel();
 
 julia> S = SpectralDensity(k, 1);
 
-julia> rff = ShiftedRFF(S, 2);
+julia> rff = DoubleRFF(S, 2);
 
 julia> ap = ApproximateGPSample(rff);
 
