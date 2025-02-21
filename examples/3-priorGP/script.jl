@@ -5,7 +5,6 @@ using KernelSpectralDensities
 using AbstractGPs
 using StatsBase
 using LinearAlgebra
-using AbstractGPsMakie
 using CairoMakie
 using DisplayAs #hide
 
@@ -18,12 +17,6 @@ S = SpectralDensity(ker, 1)
 
 gp = GP(ker)
 
-# We can also plot this GP using AbstractGPsMakie.jl, but 
-# we don't see very much, since we have a simple GP with 
-# zero mean and a variance of 1. 
-f = plot(0:0.1:1, gp; size=(600, 400))
-DisplayAs.PNG(f) #hide #md
-
 # ## Naive Sampling
 # If we want to draw a sample from the GP prior, the 
 # standard way is to use the Cholesky decomposition of the kernel matrix.
@@ -34,7 +27,8 @@ x_sample = range(0, 2; length=5)
 # To sample, we calculate the mean and covariance of the GP at these points. 
 # While we use the AbstractGPs interface, in this case the mean is just
 # a zero vector and the covariance is the kernel matrix over the sample points.
-m = mean(gp, x_sample)'
+m = mean(gp, x_sample)
+print(m) #hide
 #-
 K = cov(gp, x_sample)
 # 
@@ -60,7 +54,6 @@ ys_plot = [naive_sample(gp, x_plot) for _ in 1:n_samples]
 f = Figure(; size=(600, 400))
 ax = Axis(f[1, 1]; xlabel="x", ylabel="y", title="Naive Sampling")
 series!(ax, x_plot, reduce(hcat, ys_plot)'; labels=["sample $i" for i in 1:n_samples])
-axislegend(ax; position=:rt)
 f
 DisplayAs.PNG(f) #hide #md
 
@@ -116,7 +109,6 @@ ys_plot = [ApproximateGPSample(rff).(x_plot) for _ in 1:n_samples]
 f = Figure(; size=(600, 400))
 ax = Axis(f[1, 1]; xlabel="x", ylabel="y", title="RFF Sampling")
 series!(ax, x_plot, reduce(hcat, ys_plot)'; labels=["sample $i" for i in 1:n_samples])
-axislegend(ax; position=:rt)
 f
 DisplayAs.PNG(f) #hide #md
 

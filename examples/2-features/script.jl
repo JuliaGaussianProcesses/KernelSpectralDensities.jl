@@ -57,7 +57,7 @@ DisplayAs.PNG(f) #hide #md
 # equivalent to the `ShiftedRFF` feature function.
 # It is defined as
 # ```math
-#     \varphi(x) = \sqrt{1 / l} \begin{pmatrix} \cos(2 π w' x) & \sin(2 π w' x) \end{pmatrix} 
+#     \varphi(x) = \sqrt{1 / l} \begin{pmatrix} \cos(2 π w' x) \\ \sin(2 π w' x) \end{pmatrix} 
 # ```
 # where $w'$ is sampled from the spectral density $S$,
 # with a total of $l/2$ sampled frequencies.
@@ -93,7 +93,7 @@ kt(x, y) = dot(rff(x), rff(y))
 
 x_plot = range(0, 2; length=50)
 f = Figure(; size=(600, 400))
-ax = Axis(f[1, 1]; xlabel="y", ylabel="ker(0., y)", title="")
+ax = Axis(f[1, 1]; xlabel="y", ylabel="ker(0, y)", title="")
 lines!(ax, x_plot, ker.(0, x_plot); label="Original Kernel")
 lines!(ax, x_plot, kt.(0, x_plot); label="KT, l = 100")
 axislegend(ax)
@@ -131,6 +131,7 @@ end
 function mean_kt_error(ker, rff, S, l, x, n)
     return mean([kt_error(ker, rff, S, l, x) for _ in 1:n])
 end
+nothing # hide
 
 # Now we compute the mean error for both feature functions, using 100 features when recovering 
 # the original kernel. To reduce the effect of randomness, we average over 5000 runs. 
