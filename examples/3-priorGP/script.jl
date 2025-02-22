@@ -80,7 +80,11 @@ cs
 # If we sample a lot more functions however, we get closer to the anaytical result
 n_manysamples = 1000
 y_sample = [naive_sample(gp, x_sample) for _ in 1:n_manysamples]
-evaluate_samples(y_sample, m, K)
+ms, cs = evaluate_samples(y_sample, m, K);
+#-
+ms
+#-
+cs
 
 #
 # However, there are two issues with this approach: 
@@ -120,25 +124,41 @@ DisplayAs.PNG(f) #hide #md
 # Unfortunately, the mean and the covariance are worse than with the naive sampling
 # for the same number of samples. 
 y_sample = [ApproximateGPSample(rff).(x_sample) for _ in 1:n_samples]
-evaluate_samples(y_sample, m, K)
+ms, cs = evaluate_samples(y_sample, m, K);
+#-
+ms
+#-
+cs
 
 # However, we now have another parameter to tune: The number of features
 # By increasing the number of features, we get close to the result we saw 
 # with the naive sampling.
 rff500 = DoubleRFF(S, 500)
 y_sample = [ApproximateGPSample(rff500).(x_sample) for _ in 1:n_samples]
-evaluate_samples(y_sample, m, K)
+ms, cs = evaluate_samples(y_sample, m, K);
+#-
+ms
+#-
+cs
 
 # By increasing the number of GP samples, we can again improve the results in 
 # both cases. 
 # 
 # With 10 feature functions
 y_sample = [ApproximateGPSample(rff).(x_sample) for _ in 1:n_manysamples]
-evaluate_samples(y_sample, m, K)
+ms, cs = evaluate_samples(y_sample, m, K);
+#-
+ms
+#-
+cs
 #
 # With 500 feature functions
 y_sample = [ApproximateGPSample(rff500).(x_sample) for _ in 1:n_manysamples]
-evaluate_samples(y_sample, m, K)
+ms, cs = evaluate_samples(y_sample, m, K);
+#-
+ms
+#-
+cs
 
 #
 # Lastly, we note that we no longer have to worry about conditioning issues,
