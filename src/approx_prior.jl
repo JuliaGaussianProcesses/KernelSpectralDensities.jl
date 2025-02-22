@@ -4,11 +4,11 @@ An approximate sample from the GP prior defined by the kernel that corresponds t
 
 # Definition
 
-Using the random Fourier feature function `f(x)`, we can define the Bayesian linear model 
+Using the a vector of `l` random fourier features `r(x)`, we can define the Bayesian linear model 
 ```math
-    f(x) = w' f(x)
+    g_s(x) = w' r(x)
 ```
-where `w_i ~ N(0, 1), i = 1,...,l` and `f(x)` is the random Fourier feature function evaluated at `x` with `l` feature dimensions. 
+where `w_i ~ N(0, 1), i = 1,...,l`. 
 Each draw of `w` results in a different function sample from the GP prior.
 
 
@@ -19,7 +19,7 @@ julia> k = SqExponentialKernel();
 
 julia> S = SpectralDensity(k, 1);
 
-julia> rff = ShiftedRFF(S, 2);
+julia> rff = DoubleRFF(S, 2);
 
 julia> ap = ApproximateGPSample(rff);
 
