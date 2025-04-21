@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Sampling a GP Prior · KernelSpectralDensities.jl</title><meta name="title" content="Sampling a GP Prior · KernelSpectralDensities.jl"/><meta property="og:title" content="Sampling a GP Prior · KernelSpectralDensities.jl"/><meta property="twitter:title" content="Sampling a GP Prior · KernelSpectralDensities.jl"/><meta name="description" content="Documentation for KernelSpectralDensities.jl."/><meta property="og:description" content="Documentation for KernelSpectralDensities.jl."/><meta property="twitter:description" content="Documentation for KernelSpectralDensities.jl."/><meta property="og:url" content="https://juliagaussianprocesses.github.io/KernelSpectralDensities.jl/examples/3-priorGP/"/><meta property="twitter:url" content="https://juliagaussianprocesses.github.io/KernelSpectralDensities.jl/examples/3-priorGP/"/><link rel="canonical" href="https://juliagaussianprocesses.github.io/KernelSpectralDensities.jl/examples/3-priorGP/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">KernelSpectralDensities.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><a class="tocitem" href="../../densities/">Spectral Densities</a></li><li><a class="tocitem" href="../../feature_functions/">Feature Functions</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../1-densities/">Kernel Densities</a></li><li><a class="tocitem" href="../2-features/">Random Fourier Features</a></li><li class="is-active"><a class="tocitem" href>Sampling a GP Prior</a><ul class="internal"><li><a class="tocitem" href="#Intro"><span>Intro</span></a></li><li><a class="tocitem" href="#Naive-Sampling"><span>Naive Sampling</span></a></li><li><a class="tocitem" href="#RFF-Sampling"><span>RFF Sampling</span></a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>Sampling a GP Prior</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Sampling a GP Prior</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaGaussianProcesses/KernelSpectralDensities.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/JuliaGaussianProcesses/KernelSpectralDensities.jl/blob/main/examples/3-priorGP/script.jl" title="View source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Sampling-a-GP-Prior"><a class="docs-heading-anchor" href="#Sampling-a-GP-Prior">Sampling a GP Prior</a><a id="Sampling-a-GP-Prior-1"></a><a class="docs-heading-anchor-permalink" href="#Sampling-a-GP-Prior" title="Permalink"></a></h1><p><a href="https://nbviewer.jupyter.org/github/JuliaGaussianProcesses/KernelSpectralDensities.jl/blob/gh-pages/dev/examples/3-priorGP/notebook.ipynb"><img src="https://img.shields.io/badge/show-nbviewer-579ACA.svg" alt/></a></p><p><em>You are seeing the HTML output generated by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a> from the <a href="https://github.com/JuliaGaussianProcesses/KernelSpectralDensities.jl/blob/main/examples/3-priorGP/script.jl">Julia source file</a>. The corresponding notebook can be viewed in <a href="https://nbviewer.jupyter.org/github/JuliaGaussianProcesses/KernelSpectralDensities.jl/blob/gh-pages/dev/examples/3-priorGP/notebook.ipynb">nbviewer</a>.</em></p><hr/><p><strong>Load required packages</strong></p><pre><code class="language-julia hljs">using KernelSpectralDensities
+using AbstractGPs
+using StatsBase
+using LinearAlgebra
+using CairoMakie</code></pre><h2 id="Intro"><a class="docs-heading-anchor" href="#Intro">Intro</a><a id="Intro-1"></a><a class="docs-heading-anchor-permalink" href="#Intro" title="Permalink"></a></h2><p>We use the AbstractGPs package to define a stationary GP prior, in other words, a GP that has not been conditioned on data yet.</p><pre><code class="language-julia hljs">ker = SqExponentialKernel()
+S = SpectralDensity(ker, 1)
+
+gp = GP(ker)</code></pre><pre><code class="nohighlight hljs">AbstractGPs.GP{AbstractGPs.ZeroMean{Float64}, KernelFunctions.SqExponentialKernel{Distances.Euclidean}}(AbstractGPs.ZeroMean{Float64}(), Squared Exponential Kernel (metric = Distances.Euclidean(0.0)))</code></pre><h2 id="Naive-Sampling"><a class="docs-heading-anchor" href="#Naive-Sampling">Naive Sampling</a><a id="Naive-Sampling-1"></a><a class="docs-heading-anchor-permalink" href="#Naive-Sampling" title="Permalink"></a></h2><p>If we want to draw a sample from the GP prior, the standard way is to use the Cholesky decomposition of the kernel matrix.</p><p>In this example, we want to sample the GP at the following points</p><pre><code class="language-julia hljs">x_sample = range(0, 2; length=5)</code></pre><pre><code class="nohighlight hljs">0.0:0.5:2.0</code></pre><p>To sample, we calculate the mean and covariance of the GP at these points. While we use the AbstractGPs interface, in this case the mean is just a zero vector and the covariance is the kernel matrix over the sample points.</p><pre><code class="language-julia hljs">m = mean(gp, x_sample)</code></pre><pre><code class="nohighlight hljs">Zeros(5)</code></pre><pre><code class="language-julia hljs">K = cov(gp, x_sample)</code></pre><pre><code class="nohighlight hljs">5×5 Matrix{Float64}:
+ 1.0       0.882497  0.606531  0.324652  0.135335
+ 0.882497  1.0       0.882497  0.606531  0.324652
+ 0.606531  0.882497  1.0       0.882497  0.606531
+ 0.324652  0.606531  0.882497  1.0       0.882497
+ 0.135335  0.324652  0.606531  0.882497  1.0</code></pre><p>We then compute the Cholesky decomposition of the covariance matrix samples a vector of standard normal random variables and obtain a sample from the GP prior.</p><pre><code class="language-julia hljs">function naive_sample(gp, x_sample)
+    m = mean(gp, x_sample)
+    K = cov(gp, x_sample)
+    Kc = cholesky(K).L
+    ζ = randn(length(x_sample))
+    return m .+ Kc * ζ
+end
+
+ys = naive_sample(gp, x_sample)</code></pre><pre><code class="nohighlight hljs">5-element Vector{Float64}:
+ -0.497880456538927
+ -0.5662818332870188
+ -0.8454795005912243
+ -1.1149744375484971
+ -0.8091910946072824</code></pre><p>To illustrate we plot a few samples</p><pre><code class="language-julia hljs">x_plot = range(0, 1; length=10)
+n_samples = 7
+ys_plot = [naive_sample(gp, x_plot) for _ in 1:n_samples]
+
+f = Figure(; size=(600, 400))
+ax = Axis(f[1, 1]; xlabel=&quot;x&quot;, ylabel=&quot;y&quot;, title=&quot;Naive Sampling&quot;)
+series!(ax, x_plot, reduce(hcat, ys_plot)&#39;; labels=[&quot;sample $i&quot; for i in 1:n_samples])
+f</code></pre><p><img src="index-15.png" alt/></p><p>To evaluate the samples, we define the following function</p><pre><code class="language-julia hljs">function evaluate_samples(y_sample, m, K)
+    ms = mean(y_sample)
+    merr = norm(m .- ms)
+    cs = cov(y_sample)
+    cerr = norm(K .- cs)
+    print(&quot;Mean error: $merr, Covariance error: $cerr\n&quot;)
+    return ms, cs
+end</code></pre><p>For the small number of samples we have, the results are not very good.</p><pre><code class="language-julia hljs">y_sample = [naive_sample(gp, x_sample) for _ in 1:n_samples]
+ms, cs = evaluate_samples(y_sample, m, K);</code></pre><pre><code class="nohighlight hljs">Mean error: 0.9863109755153893, Covariance error: 2.8096375521957353
+</code></pre><pre><code class="language-julia hljs">ms</code></pre><pre><code class="nohighlight hljs">5-element Vector{Float64}:
+ 0.10981562476406978
+ 0.44031083678823524
+ 0.6171010984970332
+ 0.5265149839818042
+ 0.32991581026533917</code></pre><pre><code class="language-julia hljs">cs</code></pre><pre><code class="nohighlight hljs">5×5 Matrix{Float64}:
+  1.31714    0.941102   0.307375  -0.305176   -0.751424
+  0.941102   0.777541   0.388235  -0.0304563  -0.39374
+  0.307375   0.388235   0.501834   0.608555    0.535152
+ -0.305176  -0.0304563  0.608555   1.31275     1.59242
+ -0.751424  -0.39374    0.535152   1.59242     2.15999</code></pre><p>If we sample a lot more functions however, we get closer to the anaytical result</p><pre><code class="language-julia hljs">n_manysamples = 1000
+y_sample = [naive_sample(gp, x_sample) for _ in 1:n_manysamples]
+ms, cs = evaluate_samples(y_sample, m, K);</code></pre><pre><code class="nohighlight hljs">Mean error: 0.09112083662239238, Covariance error: 0.08574644006897204
+</code></pre><pre><code class="language-julia hljs">ms</code></pre><pre><code class="nohighlight hljs">5-element Vector{Float64}:
+ -0.052207044811031666
+ -0.05962241637332068
+ -0.0415980364180494
+ -0.01214127943625551
+  0.01203293415935746</code></pre><pre><code class="language-julia hljs">cs</code></pre><pre><code class="nohighlight hljs">5×5 Matrix{Float64}:
+ 1.00385   0.873163  0.610198  0.340433  0.144414
+ 0.873163  0.97661   0.875248  0.621779  0.347945
+ 0.610198  0.875248  1.00342   0.904101  0.636395
+ 0.340433  0.621779  0.904101  1.02244   0.892318
+ 0.144414  0.347945  0.636395  0.892318  0.970916</code></pre><p>However, there are two issues with this approach:</p><ol><li>It is quite computationally expensive, since we need to calculate the Cholesky decomposition.</li><li>Sampling at a larger number of points can cause conditionint issues, as we show below.</li></ol><pre><code class="language-julia hljs">x_sample_many = range(0, 2; length=20)
+try
+    naive_sample(gp, x_sample_many)
+catch err
+    showerror(stderr, err)
+end</code></pre><pre><code class="nohighlight hljs">PosDefException: matrix is not positive definite; Factorization failed.</code></pre><h2 id="RFF-Sampling"><a class="docs-heading-anchor" href="#RFF-Sampling">RFF Sampling</a><a id="RFF-Sampling-1"></a><a class="docs-heading-anchor-permalink" href="#RFF-Sampling" title="Permalink"></a></h2><p>Random Fourier features are an alternative option to sample the GP prior. Instead of computing the Cholesky decomposition of the kernel matrix, we compute a number of Fourier features and can generate samples from the GP by defining a weighted sum of these features.</p><p class="math-container">\[    f(x) = \sum_{i=1}^l w_i \varphi_i(x)\]</p><p>The weights <span>$w_i$</span> are sampled from a standard normal distribution.</p><pre><code class="language-julia hljs">rff = DoubleRFF(S, 10)
+agps = ApproximateGPSample(rff)
+agps.(x_sample)</code></pre><pre><code class="nohighlight hljs">5-element Vector{Float64}:
+  1.2810295438770924
+  1.1162140294256733
+  0.7770627207927714
+  0.34160330399027394
+ -0.07134896426884496</code></pre><p>We can plot the samples as before</p><pre><code class="language-julia hljs">n_samples = 7
+ys_plot = [ApproximateGPSample(rff).(x_plot) for _ in 1:n_samples]
+
+f = Figure(; size=(600, 400))
+ax = Axis(f[1, 1]; xlabel=&quot;x&quot;, ylabel=&quot;y&quot;, title=&quot;RFF Sampling&quot;)
+series!(ax, x_plot, reduce(hcat, ys_plot)&#39;; labels=[&quot;sample $i&quot; for i in 1:n_samples])
+f</code></pre><p><img src="index-31.png" alt/></p><p>Unfortunately, the mean and the covariance are worse than with the naive sampling for the same number of samples.</p><pre><code class="language-julia hljs">y_sample = [ApproximateGPSample(rff).(x_sample) for _ in 1:n_samples]
+ms, cs = evaluate_samples(y_sample, m, K);</code></pre><pre><code class="nohighlight hljs">Mean error: 0.4703725051165074, Covariance error: 1.7487573694832248
+</code></pre><pre><code class="language-julia hljs">ms</code></pre><pre><code class="nohighlight hljs">5-element Vector{Float64}:
+ -0.2916599272198823
+ -0.2788164310088815
+ -0.20907095337003995
+ -0.11527850400740348
+ -0.038031318592695</code></pre><pre><code class="language-julia hljs">cs</code></pre><pre><code class="nohighlight hljs">5×5 Matrix{Float64}:
+ 0.728927  0.606082  0.467075  0.381741  0.395026
+ 0.606082  0.562672  0.477294  0.397215  0.365684
+ 0.467075  0.477294  0.445296  0.395448  0.358293
+ 0.381741  0.397215  0.395448  0.389309  0.39238
+ 0.395026  0.365684  0.358293  0.39238   0.468779</code></pre><p>However, we now have another parameter to tune: The number of features By increasing the number of features, we get close to the result we saw with the naive sampling.</p><pre><code class="language-julia hljs">rff500 = DoubleRFF(S, 500)
+y_sample = [ApproximateGPSample(rff500).(x_sample) for _ in 1:n_samples]
+ms, cs = evaluate_samples(y_sample, m, K);</code></pre><pre><code class="nohighlight hljs">Mean error: 1.535041408116047, Covariance error: 2.118621506946047
+</code></pre><pre><code class="language-julia hljs">ms</code></pre><pre><code class="nohighlight hljs">5-element Vector{Float64}:
+ 0.9863249796239554
+ 0.9531885294759388
+ 0.629955041273104
+ 0.2548571509962441
+ 0.11467896510205029</code></pre><pre><code class="language-julia hljs">cs</code></pre><pre><code class="nohighlight hljs">5×5 Matrix{Float64}:
+ 0.986024   1.06929   0.789453  0.389075  0.0986448
+ 1.06929    1.59471   1.51785   1.12985   0.812884
+ 0.789453   1.51785   1.65726   1.42097   1.15974
+ 0.389075   1.12985   1.42097   1.38114   1.25007
+ 0.0986448  0.812884  1.15974   1.25007   1.34014</code></pre><p>By increasing the number of GP samples, we can again improve the results in both cases.</p><p>With 10 feature functions</p><pre><code class="language-julia hljs">y_sample = [ApproximateGPSample(rff).(x_sample) for _ in 1:n_manysamples]
+ms, cs = evaluate_samples(y_sample, m, K);</code></pre><pre><code class="nohighlight hljs">Mean error: 0.13897612660738592, Covariance error: 1.215132941499786
+</code></pre><pre><code class="language-julia hljs">ms</code></pre><pre><code class="nohighlight hljs">5-element Vector{Float64}:
+ 0.058474311019376266
+ 0.06276453528159073
+ 0.06537066457917035
+ 0.06444674734720866
+ 0.05940559567355604</code></pre><pre><code class="language-julia hljs">cs</code></pre><pre><code class="nohighlight hljs">5×5 Matrix{Float64}:
+ 1.0424    1.00334   0.876581  0.712909  0.575138
+ 1.00334   1.0641    1.01373   0.874083  0.701494
+ 0.876581  1.01373   1.05605   0.989184  0.841873
+ 0.712909  0.874083  0.989184  1.01591   0.946257
+ 0.575138  0.701494  0.841873  0.946257  0.976566</code></pre><p>With 500 feature functions</p><pre><code class="language-julia hljs">y_sample = [ApproximateGPSample(rff500).(x_sample) for _ in 1:n_manysamples]
+ms, cs = evaluate_samples(y_sample, m, K);</code></pre><pre><code class="nohighlight hljs">Mean error: 0.05521427949286809, Covariance error: 0.1275305259448162
+</code></pre><pre><code class="language-julia hljs">ms</code></pre><pre><code class="nohighlight hljs">5-element Vector{Float64}:
+  0.0365486212262885
+  0.03869196883232553
+  0.012671806682106273
+ -0.006790936547433723
+  0.003009151121538044</code></pre><pre><code class="language-julia hljs">cs</code></pre><pre><code class="nohighlight hljs">5×5 Matrix{Float64}:
+ 0.999612  0.874209  0.573214  0.28624   0.118205
+ 0.874209  1.02554   0.892758  0.579912  0.292827
+ 0.573214  0.892758  1.02792   0.880059  0.566414
+ 0.28624   0.579912  0.880059  1.00106   0.853468
+ 0.118205  0.292827  0.566414  0.853468  0.980865</code></pre><p>Lastly, we note that we no longer have to worry about conditioning issues, and can evaluate a given GP sample at however many points we like</p><pre><code class="language-julia hljs">ApproximateGPSample(rff).(x_sample_many)</code></pre><pre><code class="nohighlight hljs">20-element Vector{Float64}:
+ -1.6138981711044387
+ -1.6110727561309952
+ -1.5941675481835103
+ -1.5626196248640434
+ -1.5161398429978141
+ -1.4547193827504028
+ -1.3786307593985894
+ -1.2884232818760128
+ -1.184913047146441
+ -1.0691676676267423
+ -0.9424860331470348
+ -0.8063735072324709
+ -0.6625130478735763
+ -0.5127328236304161
+ -0.3589709652927843
+ -0.20323815002041867
+ -0.04757875779138393
+  0.10596863175635762
+  0.2554106209548927
+  0.39883747548733645</code></pre><hr />
+<h6>Package and system information</h6>
+<details>
+<summary>Package information (click to expand)</summary>
+<pre>
+Status &#96;~/work/KernelSpectralDensities.jl/KernelSpectralDensities.jl/examples/3-priorGP/Project.toml&#96;
+  &#91;99985d1d&#93; AbstractGPs v0.5.21
+  &#91;7834405d&#93; AbstractGPsMakie v0.2.8
+⌃ &#91;13f3f980&#93; CairoMakie v0.12.18
+  &#91;0b91fe84&#93; DisplayAs v0.1.6
+  &#91;027d52a2&#93; KernelSpectralDensities v0.2.0 &#96;/home/runner/work/KernelSpectralDensities.jl/KernelSpectralDensities.jl#main&#96;
+  &#91;98b081ad&#93; Literate v2.20.1
+  &#91;2913bbd2&#93; StatsBase v0.34.4
+Info Packages marked with ⌃ have new versions available and may be upgradable.
+</pre>
+To reproduce this notebook's package environment, you can
+<a href="./Manifest.toml">
+download the full Manifest.toml</a>.
+</details>
+<details>
+<summary>System information (click to expand)</summary>
+<pre>
+Julia Version 1.11.3
+Commit d63adeda50d &#40;2025-01-21 19:42 UTC&#41;
+Build Info:
+  Official https://julialang.org/ release
+Platform Info:
+  OS: Linux &#40;x86_64-linux-gnu&#41;
+  CPU: 4 × AMD EPYC 7763 64-Core Processor
+  WORD_SIZE: 64
+  LLVM: libLLVM-16.0.6 &#40;ORCJIT, znver3&#41;
+Threads: 1 default, 0 interactive, 1 GC &#40;on 4 virtual cores&#41;
+Environment:
+  JULIA_PKG_SERVER_REGISTRY_PREFERENCE &#61; eager
+  JULIA_LOAD_PATH &#61; :/home/runner/.julia/packages/JuliaGPsDocs/7M86H/src
+</pre>
+</details><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../2-features/">« Random Fourier Features</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.1 on <span class="colophon-date" title="Saturday 22 February 2025 12:41">Saturday 22 February 2025</span>. Using Julia version 1.11.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
