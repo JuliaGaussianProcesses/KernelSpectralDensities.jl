@@ -12,13 +12,16 @@ _matern_order(::Matern52Kernel) = 5 / 2
 # should be able to abstract/ generalize a lot of the special casing
 function _spectral_distribution(kernel::MaternKernels, l::Real)
     ν = _matern_order(kernel)
-    return inv(2 * π * l) * TDist(2 * ν)
+    return INVPI * l * TDist(2 * ν)
 end
 
-function _spectral_distribution(kernel::MaternKernels, l::AbstractVector)
+function _spectral_distribution(kernel::MaternKernels, L::AbstractMatrix)
     ν = _matern_order(kernel)
-    n = length(l)
-    l = inv.(2 * π * l) .^ 2
-    D = Distributions.MvTDist(2 * ν, zeros(n), diagm(l))
+    # n = length(l)
+    # l = inv.(2 * π * l) .^ 2
+    n = size(L, 1) # this may be wrong for LinearTransform
+    σv = INVPI * L
+    Σ = Matrix(σv' * σv) # weirdly, there is no conversion from Diagonal to PDMat
+    D = Distributions.MvTDist(2 * ν, zeros(n), Σ)
     return D
 end

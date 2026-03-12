@@ -1,3 +1,7 @@
+struct OperatorDecomposition{A,D<:Distribution}
+    A::A
+    d::D
+end
 
 abstract type AbstractSpectralDensity end
 
@@ -43,7 +47,7 @@ julia> S(zeros(2))
 6.2831853071795845
 ```
 """
-struct SpectralDensity{K<:KernelFunctions.Kernel,D<:Distribution} <: AbstractSpectralDensity
+struct SpectralDensity{K<:KernelFunctions.Kernel,D} <: AbstractSpectralDensity
     kernel::K
     # dim::Int
     d::D
@@ -53,8 +57,9 @@ struct SpectralDensity{K<:KernelFunctions.Kernel,D<:Distribution} <: AbstractSpe
             throw(ArgumentError("Dimension must be greater than 0"))
         end
 
-        sk, l = _deconstruct_kernel(kernel, dim)
-        d = _spectral_distribution(sk, l)
+        # sk, l = _deconstruct_kernel(kernel, dim)
+        # d = _spectral_distribution(sk, l)
+        d = _spectral_decomposition(kernel, dim)
 
         return new{typeof(kernel),typeof(d)}(kernel, d)
     end
@@ -95,3 +100,5 @@ end
 function _spectral_distribution(ker::KernelFunctions.Kernel, l)
     return throw(MethodError(_spectral_distribution, (ker,)))
 end
+
+INVPI = inv(2 * π)

@@ -13,6 +13,7 @@ export ShiftedRFF, DoubleRFF
 export ApproximateGPSample
 
 include("base.jl")
+include("decomposition.jl")
 include("expkernels.jl")
 include("matern.jl")
 include("features.jl")

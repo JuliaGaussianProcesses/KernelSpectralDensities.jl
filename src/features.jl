@@ -43,7 +43,7 @@ end
 ShiftedRFF(S::SpectralDensity, l::Int) = ShiftedRFF(Random.default_rng(), S, l)
 
 _mul(w::Vector, x) = w .* x
-_mul(w::Matrix, x) = dot.(eachcol(w), [x])
+_mul(w::Matrix, x) = dot.(eachcol(w), Ref(x))
 
 function (rff::ShiftedRFF)(x)
     return sqrt(2 / rff.l) * cos.(2 * pi * (_mul(rff.wv, x) .+ rff.b))
@@ -93,4 +93,34 @@ function (rff::DoubleRFF)(x)
     c = cos.(2 * pi * (_mul(rff.wv, x)))
     s = sin.(2 * pi * (_mul(rff.wv, x)))
     return sqrt(2 / rff.l) * vcat(c, s)
+end
+
+#################
+## MO features
+
+abstract type AbstractMORFF end
+
+struct GenericMORFF{RFF<:AbstractRFF} <: AbstractMORFF
+    rff::RFF
+    B::Matrix{Float64}
+
+    # function GenericMORFF(
+    #     rng::AbstractRNG,
+    #     S::SpectralDensity,
+    #     l::Int;
+    #     rff_type::Type{<:AbstractRFF}=DoubleRFF,
+    #     p::Int, # in many cases inferred automatically
+    # )
+    #     rff = rff_type(rng, S.d, l)
+    #     # 
+    #     return new{typeof(rff)}(rff, reshape(B, p * r, l))
+    # end
+end
+
+function (morff::GenericMORFF)(x)
+    l = morff.rff.l
+    p = size(morff.B, 1)
+    Bs = reshape(morff.B, p, :, l)
+    cs = reshape(morff.rff(x), 1, 1, l)
+    return reshape(cs .* Bs, p, :)
 end

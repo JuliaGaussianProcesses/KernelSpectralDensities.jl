@@ -3,11 +3,12 @@
 ## Squared ExponentialKernel
 
 # ToDo: Not sure about distances? Do all work?
-function _spectral_distribution(ker::SqExponentialKernel, l::Real)
-    return inv(2 * π * l) * Normal()
+function _spectral_distribution(::SqExponentialKernel, l::Real)
+    return INVPI * l * Normal()
 end
 
-function _spectral_distribution(ker::SqExponentialKernel, l::AbstractVector)
-    σv = abs2.(inv.(2 * π * l))
-    return MvNormal(Diagonal(σv))
+function _spectral_distribution(::SqExponentialKernel, L::AbstractMatrix)
+    # σv = abs2.(inv.(2 * π * l))
+    σv = INVPI * L
+    return MvNormal(σv' * σv)
 end
