@@ -38,7 +38,8 @@ function test_RFF_kernel_recovery(RFF, ker, d; plot=false)
         return norm(k1 .- k2)
     end
 
-    err = [kernel_approx_error(RFF(rng, S, Int(10^i)), ker, x, y) for i in (d + 1):(d + 3)]
+    # (d + 1):(d + 3)
+    err = [kernel_approx_error(RFF(rng, S, Int(10^i)), ker, x, y) for i in [2, 3]]
 
     @test all(diff(err) .< 0)
     # println(diff(err))

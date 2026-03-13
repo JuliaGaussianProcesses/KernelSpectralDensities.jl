@@ -19,16 +19,22 @@ end
     include("decomposition.jl")
 end
 
-@testset "SpectralDensities" begin
-    include("expkernels.jl")
-
-    include("matern.jl")
-end
-
 @testset "Feature functions" begin
     include("features.jl")
 end
 
-@testset "Approximate prior" begin
-    include("approx_prior.jl")
+@testset "MO Kernels" begin
+    include("mokernels.jl")
+end
+
+if "heavy" in ARGS
+    @testset "SpectralDensities" begin
+        include("expkernels.jl")
+
+        include("matern.jl")
+    end
+
+    @testset "Approximate prior" begin
+        include("approx_prior.jl")
+    end
 end
