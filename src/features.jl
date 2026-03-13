@@ -49,6 +49,8 @@ function (rff::ShiftedRFF)(x)
     return sqrt(2 / rff.l) * cos.(2 * pi * (_mul(rff.wv, x) .+ rff.b))
 end
 
+length(rff::ShiftedRFF) = rff.l
+
 """
     DoubleRFF([rng::AbstractRNG], S::SpectralDensity, l::Int)
 Random Fourier feature function with cos and sin terms, projecting an input `x` into `l` dimensionional feature space.
@@ -95,6 +97,8 @@ function (rff::DoubleRFF)(x)
     return sqrt(2 / rff.l) * vcat(c, s)
 end
 
+length(rff::DoubleRFF) = rff.l
+
 #################
 ## MO features
 
@@ -103,7 +107,7 @@ abstract type AbstractMORFF end
 struct MORFF{RFF<:AbstractRFF} <: AbstractMORFF
     rff::RFF
     B::Matrix{Float64}
-    p::Tuple{Int,Int}
+    pr::Tuple{Int,Int}
 
     function MORFF(
         rng::AbstractRNG,
@@ -119,6 +123,8 @@ struct MORFF{RFF<:AbstractRFF} <: AbstractMORFF
     end
 end
 
+length(morff::MORFF) = morff.rff.l * morff.pr[2]
+
 function MORFF(
     S::SpectralDensity, l::Int; rff_type::Type{<:AbstractRFF}=DoubleRFF, p::Int=0
 )
@@ -127,9 +133,17 @@ end
 
 function (morff::MORFF)(x)
     # l = morff.rff.l
-    p = morff.p[1]
-    r = morff.p[2]
+    p = morff.pr[1]
+    r = morff.pr[2]
     Bs = reshape(morff.B, p, r, :)
     cs = reshape(morff.rff(x), 1, 1, :)
     return reshape(cs .* Bs, p, :)
+end
+
+function (morff::MORFF)(x::Tuple{T,Int64}) where {T}
+    r = morff.pr[2]
+    Bslice = view(morff.B, x[2], :)
+    Bs = reshape(Bslice, 1, r, :)
+    cs = reshape(morff.rff(x[1]), 1, 1, :)
+    return reshape(cs .* Bs, 1, :)
 end

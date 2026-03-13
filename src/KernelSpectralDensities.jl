@@ -5,7 +5,7 @@ using Reexport
 using Distributions
 using LinearAlgebra
 
-import Base: rand
+import Base: rand, length
 using Random
 
 export SpectralDensity

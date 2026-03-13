@@ -33,6 +33,9 @@ function _spectral_decomposition(ker::IndependentMOKernel, dim::Int)
 end
 
 function _stackedB(B::UniformScaling, wv, p)
+    if p == 0
+        throw(ArgumentError("The output dimension p must be specified"))
+    end
     return B[1:p, 1:p], (p, p)
 end
 
