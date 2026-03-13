@@ -15,6 +15,10 @@ include("test_utils.jl")
     include("base.jl")
 end
 
+@testset "Decomposition" begin
+    include("decomposition.jl")
+end
+
 @testset "SpectralDensities" begin
     include("expkernels.jl")
 

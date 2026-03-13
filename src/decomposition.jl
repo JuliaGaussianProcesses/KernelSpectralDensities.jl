@@ -45,7 +45,7 @@ function _spectral_decomposition(ker::IntrinsicCoregionMOKernel, dim::Int)
     return OperatorDecomposition(B, d)
 end
 
-function _stackedB(B::Matrix, wv, p)
+function _stackedB(B::LowerTriangular, wv, p)
     # @assert size(B, 1) == p
     return B, size(B)
 end
