@@ -32,8 +32,17 @@ function _spectral_decomposition(ker::IndependentMOKernel, dim::Int)
     return OperatorDecomposition(I, d)
 end
 
+function _stackedB(B::UniformScaling, wv, p)
+    return B[1:p, 1:p], (p, p)
+end
+
 function _spectral_decomposition(ker::IntrinsicCoregionMOKernel, dim::Int)
     d = _spectral_decomposition(ker.kernel, dim)
     B = cholesky(ker.B).L
     return OperatorDecomposition(B, d)
+end
+
+function _stackedB(B::Matrix, wv, p)
+    # @assert size(B, 1) == p
+    return B, size(B)
 end

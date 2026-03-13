@@ -10,6 +10,7 @@ using Random
 
 export SpectralDensity
 export ShiftedRFF, DoubleRFF
+export MORFF
 export ApproximateGPSample
 
 include("base.jl")

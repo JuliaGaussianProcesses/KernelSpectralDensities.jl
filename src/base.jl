@@ -1,5 +1,5 @@
-struct OperatorDecomposition{A,D<:Distribution}
-    A::A
+struct OperatorDecomposition{B,D<:Distribution}
+    B::B
     d::D
 end
 
@@ -47,10 +47,10 @@ julia> S(zeros(2))
 6.2831853071795845
 ```
 """
-struct SpectralDensity{K<:KernelFunctions.Kernel,D} <: AbstractSpectralDensity
+struct SpectralDensity{D,K<:KernelFunctions.Kernel} <: AbstractSpectralDensity
+    d::D
     kernel::K
     # dim::Int
-    d::D
 
     function SpectralDensity(kernel::KernelFunctions.Kernel, dim::Int)
         if dim < 1
@@ -61,7 +61,7 @@ struct SpectralDensity{K<:KernelFunctions.Kernel,D} <: AbstractSpectralDensity
         # d = _spectral_distribution(sk, l)
         d = _spectral_decomposition(kernel, dim)
 
-        return new{typeof(kernel),typeof(d)}(kernel, d)
+        return new{typeof(d),typeof(kernel)}(d, kernel)
     end
 end
 
@@ -69,8 +69,17 @@ function (S::SpectralDensity)(w)
     return pdf(S.d, w)
 end
 
+# ToDo: Implement this
+function (S::SpectralDensity{<:OperatorDecomposition})(w)
+    return false #pdf(S.d, w)
+end
+
 function rand(rng::AbstractRNG, S::SpectralDensity, n::Int...)
     return rand(rng, S.d, n...)
+end
+
+function rand(rng::AbstractRNG, S::SpectralDensity{<:OperatorDecomposition}, n::Int...)
+    return rand(rng, S.d.d, n...)
 end
 
 # ToDo: This could perhaps go into a separate file

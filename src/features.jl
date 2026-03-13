@@ -100,27 +100,36 @@ end
 
 abstract type AbstractMORFF end
 
-struct GenericMORFF{RFF<:AbstractRFF} <: AbstractMORFF
+struct MORFF{RFF<:AbstractRFF} <: AbstractMORFF
     rff::RFF
     B::Matrix{Float64}
+    p::Tuple{Int,Int}
 
-    # function GenericMORFF(
-    #     rng::AbstractRNG,
-    #     S::SpectralDensity,
-    #     l::Int;
-    #     rff_type::Type{<:AbstractRFF}=DoubleRFF,
-    #     p::Int, # in many cases inferred automatically
-    # )
-    #     rff = rff_type(rng, S.d, l)
-    #     # 
-    #     return new{typeof(rff)}(rff, reshape(B, p * r, l))
-    # end
+    function MORFF(
+        rng::AbstractRNG,
+        S::SpectralDensity,
+        l::Int;
+        rff_type::Type{<:AbstractRFF}=DoubleRFF,
+        p::Int=0, # in many cases inferred automatically
+    )
+        rff = rff_type(rng, S, l)
+        sB, pr = _stackedB(S.d.B, rff.wv, p)
+        # 
+        return new{typeof(rff)}(rff, sB, pr)
+    end
 end
 
-function (morff::GenericMORFF)(x)
-    l = morff.rff.l
-    p = size(morff.B, 1)
-    Bs = reshape(morff.B, p, :, l)
-    cs = reshape(morff.rff(x), 1, 1, l)
+function MORFF(
+    S::SpectralDensity, l::Int; rff_type::Type{<:AbstractRFF}=DoubleRFF, p::Int=0
+)
+    return MORFF(Random.default_rng(), S, l; rff_type=rff_type, p=p)
+end
+
+function (morff::MORFF)(x)
+    # l = morff.rff.l
+    p = morff.p[1]
+    r = morff.p[2]
+    Bs = reshape(morff.B, p, r, :)
+    cs = reshape(morff.rff(x), 1, 1, :)
     return reshape(cs .* Bs, p, :)
 end
