@@ -57,8 +57,6 @@ struct SpectralDensity{D,K<:KernelFunctions.Kernel} <: AbstractSpectralDensity
             throw(ArgumentError("Dimension must be greater than 0"))
         end
 
-        # sk, l = _deconstruct_kernel(kernel, dim)
-        # d = _spectral_distribution(sk, l)
         d = _spectral_decomposition(kernel, dim)
 
         return new{typeof(d),typeof(kernel)}(d, kernel)
@@ -80,34 +78,6 @@ end
 
 function rand(rng::AbstractRNG, S::SpectralDensity{<:OperatorDecomposition}, n::Int...)
     return rand(rng, S.d.d, n...)
-end
-
-# ToDo: This could perhaps go into a separate file
-function _deconstruct_kernel(ker::KernelFunctions.SimpleKernel, dim::Int)
-    if dim == 1
-        l = 1.0
-    else
-        l = ones(dim)
-    end
-    return ker, l
-end
-
-function _deconstruct_kernel(
-    ker::TransformedKernel{<:KernelFunctions.SimpleKernel,<:ScaleTransform}, dim::Int
-)
-    l = inv(only(ker.transform.s))
-    if dim > 1
-        l = ones(dim) * l
-    end
-    return ker.kernel, l
-end
-
-function _deconstruct_kernel(ker::TransformedKernel, dim::Int)
-    return throw(MethodError(_deconstruct_kernel, (ker, dim)))
-end
-
-function _spectral_distribution(ker::KernelFunctions.Kernel, l)
-    return throw(MethodError(_spectral_distribution, (ker,)))
 end
 
 INVPI = inv(2 * π)

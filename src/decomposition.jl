@@ -6,6 +6,11 @@ function _base_l(dims::Int)
     end
 end
 
+## Fallback
+function _spectral_decomposition(ker::KernelFunctions.Kernel, l)
+    return throw(MethodError(_spectral_decomposition, (ker,)))
+end
+
 ###################################
 ## Scalar kernels
 
